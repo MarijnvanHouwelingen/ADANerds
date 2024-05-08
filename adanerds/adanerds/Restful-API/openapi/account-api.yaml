@@ -10,7 +10,7 @@ paths:
   /accounts/users/:
     post:
       summary: Create a User
-      operationId: resources.user.User.create
+      operationId: resources.account.User.create
       tags:
         - User
       requestBody:
@@ -47,7 +47,7 @@ paths:
   /accounts/users/{user_id}:
     get:
       summary: Get a User
-      operationId: resources.user.User.get
+      operationId: resources.account.User.get
       tags:
         - User
       parameters:
@@ -77,6 +77,7 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: Update a User
+      operationId: resources.account.User.update
       tags:
         - User
       parameters:
@@ -112,6 +113,7 @@ paths:
                 $ref: "#/components/schemas/Error"
     delete:
       summary: Delete a User
+      operationId: resources.account.User.delete
       tags:
         - User
       parameters:
@@ -142,7 +144,7 @@ paths:
   /accounts/profiles/{user_id}:
     post:
       summary: Create a Profile for a User
-      operationId: resources.profile.Profile.create
+      operationId: resources.account.Profile.create
       tags:
         - Profile
       parameters:
@@ -177,7 +179,7 @@ paths:
                 $ref: "#/components/schemas/Error"
     get:
       summary: Get a Profile
-      operationId: resources.profile.Profile.get
+      operationId: resources.account.Profile.get
       tags:
         - Profile
       parameters:
@@ -189,6 +191,60 @@ paths:
       responses:
         '200':
           description: Profile information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileOut"
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: delete a profile
+      operationId: resources.account.Profile.delete
+      tags:
+        - Profile
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileOut"
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: update a profile
+      operationId: resources.account.Profile.update
+      tags:
+        - Profile
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted profile
           content:
             application/json:
               schema:
