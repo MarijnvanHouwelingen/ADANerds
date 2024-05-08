@@ -265,7 +265,7 @@ paths:
   /accounts/notifications/{user_id}:
     get:
       summary: Get Notification Settings for a User
-      operationId: resources.notification.NotificationSettings.get
+      operationId: resources.account.NotificationSettings.get
       tags:
         - Notification Settings
       parameters:
@@ -295,6 +295,7 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: Update Notification Settings for a User
+      operationId: resources.account.NotificationSettings.update
       tags:
         - Notification Settings
       parameters:
