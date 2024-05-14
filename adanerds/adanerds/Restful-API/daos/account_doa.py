@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from db import Base
-
+from listing_doa import ListingDOA
+from booking_doa import BookingDOA
 # Define the UserDAO
 class UserDAO(Base):
     __tablename__ = 'users'
@@ -28,7 +29,7 @@ class ProfileDAO(Base):
     gender = Column(String, nullable=False)
     phone_number = Column(String, nullable=False)
     address = Column(String, nullable=False)
-    user = relationship("UserDAO", back_populates="profile")
+    user = relationship("UserDAO", back_populates="profiles")
     
     def __init__(self,user_id,date_of_birth,gender,phone_number,address,user):
         self.user_id = user_id
@@ -59,5 +60,5 @@ class NotificationSettingsDAO(Base):
 
 UserDAO.profile = relationship("ProfileDAO", uselist=False, back_populates="user")
 UserDAO.notification_settings = relationship("NotificationSettingsDAO", uselist=False, back_populates="user")
-
+UserDAO.listing = relationship("ListingDOA",uselist=False, back_populates="user")
 

@@ -329,7 +329,140 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /listings/:
+    post:
+      summary: Create a listing
+      operationId: resources.listing.create
+      tags:
+        - Listing
+      requestBody:
+        description: Listing information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingIn"
+      responses:
+        '200':
+          description: Created Listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    description: The Listing ID
+        '500':
+          description: Listing with the same listing ID already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
+  /listings/{listing_id}:
+    get:
+      summary: Get a Listing
+      operationId: resources.listing.get
+      tags:
+        - Listing
+      parameters:
+        - name: listing_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Listing information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListingOut"
+        '404':
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a User
+      operationId: resources.account.User.update
+      tags:
+        - User
+      parameters:
+        - name: listing_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: New Listing Information
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingIn"
+      responses:
+        '200':
+          description: Listing Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a Listing
+      operationId: resources.listing.delete
+      tags:
+        - Listing
+      parameters:
+        - name: listing_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Listing Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 # Additional paths would be defined here for Profile and NotificationSettings with similar structure
 # following the example of the Delivery API.
 
@@ -427,6 +560,44 @@ components:
           format: boolean
         forum_notification:
           format: boolean
+    ListingIn:
+      required:
+        - user_id
+        - title
+        - description
+        - latitude
+        - longtitude
+        - price
+        - capacity
+        - available_from
+        - available_to
+      properties:
+        user_id:
+          format: integer
+        title:
+          format: string
+        description:
+          format: string
+        latitude:
+          format: number
+        longtitude:
+          format: number
+        price:
+          format: number
+        capacity:
+          format: number
+        available_from:
+          format: date
+        available_to:
+          format: date
+
+    ListingOut:
+      required:
+        - listing_id
+      properties:
+        listing_id:
+          format: integer
+
     AnyMsg:
       required:
         - code
