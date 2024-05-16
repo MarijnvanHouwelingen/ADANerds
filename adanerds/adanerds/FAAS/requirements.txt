@@ -1,0 +1,5 @@
+functions-framework
+google-cloud-pubsub
+requests
+google-cloud-storage
+flask
