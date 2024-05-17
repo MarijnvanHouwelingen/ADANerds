@@ -4,6 +4,7 @@ from flask import jsonify
 
 from daos.listing_doa import ListingDOA
 from db import Session
+from daos.account_doa import UserDOA
 
 class Listing:
     @staticmethod
@@ -35,11 +36,11 @@ class Listing:
         if listing:
             listing_info = {
                 "user_id": listing.user_id,
-                "title": listing.title,
-                "description": listing.description,
-                "location": listing.location,
-                "latitiude": listing.latitude,
-                "longtitude": listing.longtitude,
+                "title": listing.user_id,
+                "description": listing.begin_date,
+                "location": listing.end_date,
+                "latitiude": listing.begin_date,
+                "longtitude": listing.status,
                 "price": listing.price,
                 "capacity": listing.capacity,
                 "available_from": listing.available_from,
@@ -51,7 +52,7 @@ class Listing:
             return jsonify(listing_info), 200
         else:
             session.close()
-            return jsonify({'message': f'No user found with id {listing_id}'}), 404
+            return jsonify({'message': f'No Listing found with id {listing_id}'}), 404
 
     @staticmethod
     def update(listing_id:int, body:dict):
@@ -59,11 +60,11 @@ class Listing:
         listing = session.query(ListingDOA).filter(ListingDOA.id == listing_id).first()
         if listing:
             listing.user_id = body.get('user_id', listing.user_id)
-            listing.title = body.get('title', listing.title)
-            listing.description = body.get('v', listing.description)
-            listing.location = body.get('location', listing.location)
-            listing.latitude = body.get('latitude', listing.latitude) 
-            listing.longtitude = body.get('longtitude', listing.longtitude) 
+            listing.user_id = body.get('title', listing.user_id)
+            listing.begin_date = body.get('v', listing.begin_date)
+            listing.end_date = body.get('location', listing.end_date)
+            listing.begin_date = body.get('latitude', listing.begin_date) 
+            listing.status = body.get('longtitude', listing.status) 
             listing.price = body.get('price', listing.price) 
             listing.capacity = body.get('capacity', listing.capacity)
             listing.available_from = body.get('available_from', listing.available_from)
@@ -71,7 +72,7 @@ class Listing:
             listing.updated_at = datetime.today().strftime('%Y-%m-%d')
             session.commit()
             session.close()
-            return jsonify({'message': 'User updated successfully'}), 200
+            return jsonify({'message': 'Listing updated successfully'}), 200
         else:
             session.close()
             return jsonify({'message': f'No listing found with id {listing_id}'}), 404
@@ -83,6 +84,6 @@ class Listing:
         session.commit()
         session.close()
         if affected_rows == 0:
-            return jsonify({'message': f'No user found with id {listing_id}'}), 404
+            return jsonify({'message': f'No Listing found with id {listing_id}'}), 404
         else:
-            return jsonify({'message': 'User deleted successfully'}), 200
+            return jsonify({'message': 'Listing deleted successfully'}), 200

@@ -1,7 +1,8 @@
 from sqlalchemy import Column, Integer, String, Date, ForeignKey,Float
 from sqlalchemy.orm import relationship
 from db import Base
-from account_doa import UserDAO
+
+
 # Define BookingDOA
 class BookingDOA(Base):
     __tablename__ = 'bookings'
@@ -12,8 +13,9 @@ class BookingDOA(Base):
     end_date = Column(String, nullable=False)
     price = Column(Float, nullable=False)
     status = Column(String)
-    user = relationship("UserDOA", back_populates="bookings")
-    listing = relationship("ListingDOA", back_populates='bookings')
+
+    user = relationship("UserDOA", back_populates="booking")
+    listing = relationship("ListingDOA", back_populates='booking')
 
     def __init__(self,listing_id,user_id,begin_date,end_date,price,status,user,listing):
         self.listing_id = listing_id
@@ -22,6 +24,5 @@ class BookingDOA(Base):
         self.end_date = end_date
         self.price = price
         self.status = status
-        self.price = price
         self.user = user
         self.listing = listing
