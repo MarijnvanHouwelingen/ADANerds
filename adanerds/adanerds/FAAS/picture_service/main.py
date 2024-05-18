@@ -2,19 +2,20 @@ from flask import Flask, request, jsonify
 from google.cloud import storage
 import json 
 import base64
+import os
 import functions_framework
 from pub_sub.pub_sub import create_topic, publish_message, create_subscription
 
 app = Flask(__name__)
 
-project_id = "" # id of project
-bucket_name = "" # name of bucket
+project_id = os.getenv("GOOGLE_CLOUD_PROJECT_ID") # id of project
+bucket_name = os.getenv("GOOGLE_CLOUD_BUCKET_NAME") # name of bucket
 
 client = storage.Client()
 bucket = client.bucket(bucket_name) # name of bucket
 
-listing_topic_id = "create/update_listing"
-listing_subscription_id = "listing-service-subscription"
+listing_topic_id = os.getenv("LISTING_TOPIC_ID")
+listing_subscription_id = os.getenv("LISTING_SUBSCRIPTION_ID")
 
 create_topic(project_id, listing_topic_id)
 create_subscription(project_id, listing_topic_id, listing_subscription_id)
