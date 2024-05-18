@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime,date
 from flask import jsonify
 
 
@@ -11,17 +11,15 @@ class Listing:
     def create(body:dict):
         session = Session()
         listing = ListingDOA(
-            user_id=body['user_name'],
-            title=body['first_name'],
-            description=body['last_name'],
-            latitude=body['email_address'],
-            longtitude=body['password'],  # This would be hashed in a real application
+            begin_date=body['begin_date'],
+            end_date=body['end_date'],
+            status=body['status'], 
             price=body['price'],
             capacity=body['capacity'],
             available_from=body['available_from'],
             available_to=body['available_to'],
-            created_at= datetime.today().strftime('%Y-%m-%d'),
-            updated_at = None
+            created_at= datetime.today(),
+            updated_at = datetime.fromisoformat('1000-01-01')
         )
         session.add(listing)
         session.commit()
@@ -35,18 +33,15 @@ class Listing:
         listing = session.query(ListingDOA).filter(ListingDOA.id == listing_id).first()
         if listing:
             listing_info = {
-                "user_id": listing.user_id,
-                "title": listing.user_id,
-                "description": listing.begin_date,
-                "location": listing.end_date,
-                "latitiude": listing.begin_date,
-                "longtitude": listing.status,
+                "begin_date": listing.begin_date,
+                "end_date": listing.end_date,
+                "status": listing.status,
                 "price": listing.price,
                 "capacity": listing.capacity,
                 "available_from": listing.available_from,
                 "available_to": listing.available_to,
-                "created_at": listing.created_at,
-                "updated_at": listing.updated_at
+                "created_at": listing.created_at.isoformat(),
+                "updated_at": listing.updated_at.isoformat()
             }
             session.close()
             return jsonify(listing_info), 200
@@ -59,17 +54,14 @@ class Listing:
         session = Session()
         listing = session.query(ListingDOA).filter(ListingDOA.id == listing_id).first()
         if listing:
-            listing.user_id = body.get('user_id', listing.user_id)
-            listing.user_id = body.get('title', listing.user_id)
-            listing.begin_date = body.get('v', listing.begin_date)
-            listing.end_date = body.get('location', listing.end_date)
-            listing.begin_date = body.get('latitude', listing.begin_date) 
-            listing.status = body.get('longtitude', listing.status) 
+            listing.begin_date = body.get('begin_date', listing.begin_date)
+            listing.end_date = body.get('end_date', listing.begin_date)
+            listing.status = body.get('status', listing.status) 
             listing.price = body.get('price', listing.price) 
             listing.capacity = body.get('capacity', listing.capacity)
             listing.available_from = body.get('available_from', listing.available_from)
             listing.available_to = body.get('available_to', listing.available_to)
-            listing.updated_at = datetime.today().strftime('%Y-%m-%d')
+            listing.updated_at = datetime.today()
             session.commit()
             session.close()
             return jsonify({'message': 'Listing updated successfully'}), 200
