@@ -1,12 +1,22 @@
 version: '3.9'
-services:  
-  userservice:
+services:
+  api_gateway:
+    image: devopsfaith/krakend:2.6.0
+    container_name: api_gatway_ct
+    volumes:
+      - ./api_gateway/krakend:/etc/krakend/
+    depends_on:
+      - restful_api
+      - authentication_service
+    ports:
+      - "8080:8081"
+  authentication_service:
     build:
       context: ./authentication_service
     container_name: authentication_service_ct
     ports:
       - "5000:5000"
-  secure_deliveryservice:
+  restful_api:
     build:
       context: ./Resful-API
     container_name: secured_restful_api_ct

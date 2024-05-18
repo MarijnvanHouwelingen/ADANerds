@@ -19,6 +19,12 @@ CORS(app.app)
 
 
 def check_if_authorize(req):
+    """Check if the request contains valid token.
+    Args:
+        req: The request object.
+    Returns:
+        The status code of the authentication service.
+    """
     auth_header = req.headers['Authorization']
     if 'AUTH_URL' in os.environ:
         auth_url = os.environ['AUTH_URL']
@@ -28,7 +34,7 @@ def check_if_authorize(req):
                            headers={'Content-Type': 'application/json',
                                     'Authorization': auth_header})
     status_code = result.status_code
-    
+
     logging.info(f"Authentication service returned status code: {status_code}")
     logging.info(f"Authentication service returned output: {result.json()}")
 
