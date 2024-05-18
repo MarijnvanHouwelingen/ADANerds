@@ -126,7 +126,7 @@ class Booking:
             session.commit()
             session.refresh(booking)
              # Publish the listing event after the listing is created
-            if booking.refund == True:
+            if booking.refund:
                 booking_id = booking.id
                 refund_amount = booking.price
                 project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
