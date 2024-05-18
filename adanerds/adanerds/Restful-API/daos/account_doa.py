@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.orm import relationship,backref
 from db import Base
-from daos.listing_doa import ListingDOA
-from daos.booking_doa import BookingDOA
+
 
 # Define the NotificationSettingsDAO
 class NotificationSettingsDAO(Base):
@@ -38,9 +37,6 @@ class UserDOA(Base):
     # Define the relationships for the User DOA
     notification_settings = relationship(NotificationSettingsDAO.__name__, backref=backref('users',uselist=False))
     
-    listing = relationship(ListingDOA.__name__, back_populates="user")
-    booking = relationship(BookingDOA.__name__, back_populates="user")
-
     def __init__(self,user_name,first_name,last_name,email_address,password,notification_settings,notification_id):
         self.user_name = user_name
         self.first_name = first_name
