@@ -47,7 +47,7 @@ def handle_listing_event(cloud_event):
         ##### Get the same information that is stored in the event bus
         return "", 200
 
-    return jsonify({'error': 'We apologize, but we are unable to issue a refund at this time.'}), 400
+    return jsonify({'error': 'We apologize, but we are unable to get the listing information at this time.'})
 
 @app.route('/pictures', methods=['POST', 'GET'])
 def pictures():
