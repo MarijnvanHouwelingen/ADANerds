@@ -2,9 +2,6 @@ import logging
 import os
 
 import connexion
-from connexion.resolver import RestyResolver
-from account import User,Profile,NotificationSettings
-
 
 from flask_cors import CORS
 from db import Base, engine

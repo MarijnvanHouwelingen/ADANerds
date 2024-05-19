@@ -2,9 +2,6 @@ import logging
 import os
 
 import connexion
-from connexion.resolver import RestyResolver
-from listing  import Listing
-
 from flask_cors import CORS
 
 from db import Base, engine
