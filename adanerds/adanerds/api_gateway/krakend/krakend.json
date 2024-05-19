@@ -2,7 +2,33 @@
     "$schema": "http://www.krakend.io/schema/v3.json",
     "version": 3,
     "output_encoding": "json",
-    "name": "InventoryOrderAggregate",
+    "name": "API",
     "port": 8081,
-    "endpoints": []
+    "endpoints": [
+        {
+            "endpoint": "/authentication",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+            {
+                "url_pattern": "/register",
+                "encoding": "json",
+                "method": "POST",
+                "host": [
+                "http://authentication_service:5000/"
+                ],
+                "disable_host_sanitize": false
+            },
+            {
+                "url_pattern": "/login",
+                "encoding": "json",
+                "method": "POST",
+                "host": [
+                "http://authentication_service:5000/"
+                ],
+                "disable_host_sanitize": false
+            }
+            ]
+        }
+    ]
 }

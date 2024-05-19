@@ -13,11 +13,9 @@ ENV GOOGLE_APPLICATION_CREDENTIALS service-account-file.json
 # Copy FAAS files into the FAAS directory
 COPY FAAS /usr/src/myapp/FAAS/
 # Copy all RestfulAPI files using the same structure
-COPY Restful-API /usr/src/myapp/Restful-API/
+COPY . /usr/src/myapp/Restful-API/
 # Expose the port that our app runs in
 EXPOSE 5000
-
-
 
 # General Enviroment Variables
 ENV DB_URL  sqlite:///datalodge.db

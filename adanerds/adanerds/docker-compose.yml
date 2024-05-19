@@ -18,7 +18,7 @@ services:
       - "5000:5000"
   restful_api:
     build:
-      context: ./Resful-API
+      context: ./Restful-API
     container_name: secured_restful_api_ct
     environment:
       - PYTHONUNBUFFERED=1
