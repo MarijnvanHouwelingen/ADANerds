@@ -3,13 +3,13 @@ import base64
 import functions_framework
 from pub_sub.pub_sub import create_topic, publish_message, create_subscription
 from flask import Flask, jsonify
-
+import os
 app = Flask(__name__)
 
-project_id = "" # id of project
-booking_topic_id = "booking_refund"
-refund_subscription_id = "refund-service-subscription"
-refund_status_topic_id = "refund_status"
+project_id = os.getenv("GOOGLE_CLOUD_PROJECT_ID")
+booking_topic_id = os.getenv("BOOKING_TOPIC_ID")
+refund_subscription_id = os.getenv("REFUND_SUBSCRIPTION_ID")
+refund_status_topic_id = os.getenv("REFUND_STATUS_TOPIC_ID")
 
 create_topic(project_id, booking_topic_id)
 create_subscription(project_id, booking_topic_id, refund_subscription_id)
