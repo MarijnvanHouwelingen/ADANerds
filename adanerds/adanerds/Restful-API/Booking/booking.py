@@ -106,7 +106,7 @@ class Booking:
             return jsonify(booking_info), 200
         else:
             session.close()
-            return jsonify({'message': f'No bookings'}), 404
+            return jsonify({'message': 'No bookings'}), 404
 
     @staticmethod
     def update(booking_id:int, body:dict) -> tuple:
@@ -161,7 +161,7 @@ class Booking:
         """
         # Cast the booking_id to an int
         booking_id = int(booking_id)
-        
+
         session = Session()
         affected_rows = session.query(BookingDOA).filter(BookingDOA.id == booking_id).delete()
         session.commit()
