@@ -1,0 +1,464 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: User Management Service
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:5000/v1.0
+paths:
+  /accounts/users:
+    post:
+      summary: Create a User
+      operationId: account.User.create
+      tags:
+        - User
+      requestBody:
+        description: User information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserIn"
+      responses:
+        '200':
+          description: Created User
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: string
+                    description: The User ID
+        '500':
+          description: User with the same username or email already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /accounts/users/{user_id}:
+    get:
+      summary: Get a User
+      operationId: account.User.get
+      tags:
+        - User
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserOut"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a User
+      operationId: account.User.update
+      tags:
+        - User
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: New User Information
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserIn"
+      responses:
+        '200':
+          description: User Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a User
+      operationId: account.User.delete
+      tags:
+        - User
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /accounts/{user_id}/profiles:
+    post:
+      summary: Create a Profile for a User
+      operationId: account.Profile.create
+      tags:
+        - Profile
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Profile Information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProfileIn"
+      responses:
+        '200':
+          description: Created Profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profile_id:
+                    type: integer
+                    description: The Profile ID
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Get a Profile
+      operationId: account.Profile.get
+      tags:
+        - Profile
+      parameters:
+        - name: profile_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Profile information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileOut"
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: delete a profile
+      operationId: account.Profile.delete
+      tags:
+        - Profile
+      parameters:
+        - name: profile_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileOut"
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: update a profile
+      operationId: account.Profile.update
+      tags:
+        - Profile
+      parameters:
+        - name: profile_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Deleted profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProfileOut"
+        '404':
+          description: Profile not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /accounts/{user_id}/notifications:
+    get:
+      summary: Get Notification Settings for a User
+      operationId: account.NotificationSettings.get
+      tags:
+        - Notification Settings
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Notification Settings Information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationOut"
+        '404':
+          description: Notification Settings not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update Notification Settings for a User
+      operationId: account.NotificationSettings.update
+      tags:
+        - Notification Settings
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Notification Settings Update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationIn"
+      responses:
+        '200':
+          description: Notification Settings Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: Notification Settings not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+ 
+  
+# Additional paths would be defined here for Profile and NotificationSettings with similar structure
+# following the example of the Delivery API.
+
+components:
+  schemas:
+    UserIn:
+      required:
+        - user_name
+        - first_name
+        - last_name
+        - email_address
+        - password
+      properties:
+        user_name:
+          format: string
+        first_name:
+          format: string
+        last_name:
+          format: string
+        email_address:
+          format: string
+        password:
+          format: string
+    UserOut:
+      required:
+        - id
+        - user_name
+        - first_name
+        - last_name
+        - email_address
+      properties:
+        id:
+          type: number
+        user_name:
+          format: string
+        first_name:
+          format: string
+        last_name:
+          format: string
+        email_address:
+          format: string
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+
+    ProfileIn:
+      required:
+        - date_of_birth
+        - gender
+        - phone_number
+        - address
+      properties:
+        date_of_birth:
+          type: string
+          format: date
+        gender:
+          format: string
+        phone_number:
+          format: string
+        address:
+          format: string
+    ProfileOut:
+      properties:
+        id:
+          type: number
+        user_id:
+          format: number
+        date_of_birth:
+          type: string
+          format: date
+        gender:
+          format: string
+        phone_number:
+          format: string
+        address:
+          format: string
+    NotificationIn:
+      required:
+        - chat_notification
+        - forum_notification
+        - review_notification
+        - booking_notification
+      properties:
+        chat_notification:
+          format: boolean
+        forum_notification:
+          format: boolean
+        review_notification:
+          format: boolean
+        booking_notification:
+          format: boolean
+    NotificationOut:
+      required:
+        - chat_notification
+        - forum_notification
+        - review_notification
+        - booking_notification
+      properties:
+        chat_notification:
+          format: boolean
+        forum_notification:
+          format: boolean
+        review_notification:
+          format: boolean
+        booking_notification:
+          format: boolean
+    
+    AnyMsg:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          format: string
+    # Error and AnyMsg schemas already defined...
+
+# Additional details may need to be adjusted
+
+    
+      
+

@@ -2,14 +2,23 @@ from datetime import datetime
 from flask import jsonify
 from flask import request
 
-from daos.account_doa import UserDOA,NotificationSettingsDAO,ProfileDAO
-from daos.listing_doa import ListingDOA
-from daos.booking_doa import BookingDOA
+from account_doa import UserDOA,NotificationSettingsDAO,ProfileDAO
+from sqlalchemy.sql import text
 from db import Session
 import os
 
 # import account pub event
-from FAAS.notification_service.main import publish_account_event
+from account_pub import publish_account_event
+
+class DataManager:
+    @staticmethod
+    def get_next_id(table_name: str) -> int:
+        session = Session()
+        query = text(f'SELECT MAX(id) as max_id FROM {table_name}')
+        result = session.execute(query).fetchone()
+        print(result)
+        return int((result[0] or 0) + 1)
+    
 class User:
     @staticmethod
     def create(body: dict) -> tuple:
@@ -22,15 +31,20 @@ class User:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Get the max_id from the datamanager class
+        user_id = DataManager.get_next_id(UserDOA.__tablename__)
+        notification_settings_id = DataManager.get_next_id(NotificationSettingsDAO.__tablename__)
         session = Session()
         try:
             notification_settings = NotificationSettingsDAO(
-                chat_notification=body.get('chat_notification', False),
-                forum_notification=body.get('forum_notification', False),
-                review_notification=body.get('review_notification', False),
-                booking_notification=body.get('booking_notification', False)
+                id = notification_settings_id,
+                chat_notification=False,
+                forum_notification=False,
+                review_notification=False,
+                booking_notification=False
             )
             user = UserDOA(
+                id = user_id,
                 user_name=body['user_name'],
                 first_name=body['first_name'],
                 last_name=body['last_name'],
@@ -51,14 +65,13 @@ class User:
                 "last_name": user.last_name,
                 "email_address": user.email_address,
                 "password": user.password,
-                "notification_settings": user.notification_settings,
                 "notification_id": user.notification_id,
             }
             
-            project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
-            listing_topic_id = os.getenv('LISTING_TOPIC_ID')
+            project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') 
+            account_listing_id = os.getenv('LISTING_TOPIC_ID') 
 
-            publish_account_event(project_id=project_id,listing_topic_id=listing_topic_id,account_data=user_data)
+            publish_account_event(project_id=project_id,account_topic_id=account_listing_id,account_data=user_data)
             
             return jsonify({'user_id': user.id}), 200
         except Exception as e:
@@ -73,24 +86,29 @@ class User:
         
 
     @staticmethod
-    def get(user_id: int) -> tuple:
+    def get(user_id: str) -> tuple:
         """
         Retrieve information about a specific user.
 
         Args:
-            user_id (int): The ID of the user.
+            user_id (string): The ID of the user.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the user_id to an int
+        user_id = int(user_id)
+
         session = Session()
         user = session.query(UserDOA).filter(UserDOA.id == user_id).first()
         if user:
             user_info = {
+                "id": user.id,
                 "user_name": user.user_name,
                 "first_name": user.first_name,
                 "last_name": user.last_name,
-                "email_address": user.email_address
+                "email_address": user.email_address,
+                "password": user.password
             }
             session.close()
             return jsonify(user_info), 200
@@ -99,17 +117,21 @@ class User:
             return jsonify({'message': f'No user found with id {user_id}'}), 404
 
     @staticmethod
-    def update(user_id: int, body: dict) -> tuple:
+    def update(user_id: str, body: dict) -> tuple:
         """
         Update information about a specific user.
 
         Args:
-            user_id (int): The ID of the user.
+            user_id (str): The ID of the user.
             body (dict): The request body containing updated user information.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+
+        # Cast the user_id to an int
+        user_id = int(user_id)
+
         session = Session()
         user = session.query(UserDOA).filter(UserDOA.id == user_id).first()
         if user:
@@ -136,6 +158,9 @@ class User:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the user_id to an int
+        user_id = int(user_id)
+
         session = Session()
         affected_rows = session.query(UserDOA).filter(UserDOA.id == user_id).delete()
         session.commit()
@@ -147,17 +172,22 @@ class User:
 
 class Profile:
     @staticmethod
-    def create(user_id: int,body: dict) -> tuple:
+    def create(user_id: str,body: dict) -> tuple:
         """
         Create a new profile for a user.
 
         Args:
-            user_id (int): The ID of the user.
+            user_id (str): The ID of the user.
             body (dict): The request body containing profile information.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the user_id to an int
+        user_id = int(user_id)
+
+        # Get the max id from profile
+        profile_id = DataManager.get_next_id(ProfileDAO.__tablename__)
         session = Session()
         try:
             # find the user that is connected to the user_id
@@ -167,6 +197,7 @@ class Profile:
 
             # Create the corresponding profile DOA
             profile = ProfileDAO(
+                id = profile_id,
                 user_id=user_id,
                 date_of_birth=datetime.strptime(body['date_of_birth'], '%Y-%m-%d'),
                 gender=body['gender'],
@@ -186,16 +217,19 @@ class Profile:
             session.close()
         
     @staticmethod
-    def get(profile_id: int) -> tuple:
+    def get(profile_id: str) -> tuple:
         """
         Retrieve information about a specific profile.
 
         Args:
-            profile_id (int): The ID of the profile.
+            profile_id (str): The ID of the profile.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the profile_id to an int
+        profile_id = int(profile_id)
+
         session = Session()
         profile = session.query(ProfileDAO).filter(ProfileDAO.id == profile_id).first()
         if profile:
@@ -212,16 +246,20 @@ class Profile:
             return jsonify({'message': f'No profile found with user id {profile_id}'}), 404
     
     @staticmethod
-    def delete(profile_id: int) -> tuple:
+    def delete(profile_id: str) -> tuple:
         """
         Delete a specific profile.
 
         Args:
-            profile_id (int): The ID of the profile.
+            profile_id (str): The ID of the profile.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+
+        # Cast the profile_id to an int
+        profile_id = int(profile_id)
+
         session = Session()
         affected_rows = session.query(ProfileDAO).filter(ProfileDAO.id == profile_id).delete()
         session.commit()
@@ -232,21 +270,24 @@ class Profile:
             return jsonify({'message': 'Profile deleted successfully'}), 200
     
     @staticmethod
-    def update(profile_id: int,body: dict) -> tuple:
+    def update(profile_id: str,body: dict) -> tuple:
         """
         Update information about a specific profile.
 
         Args:
-            profile_id (int): The ID of the profile.
+            profile_id (str): The ID of the profile.
             body (dict): The request body containing updated profile information.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+
+        # Cast the profile_id to an int
+        profile_id = int(profile_id)
+
         session = Session()
         profile = session.query(ProfileDAO).filter(ProfileDAO.id == profile_id).first()
         if profile:
-            profile_id = UserDOA.id
             profile.date_of_birth = body.get('first_name', profile.date_of_birth)
             profile.gender = body.get('last_name', profile.gender)
             profile.phone_number = body.get('email_address', profile.phone_number)
@@ -260,16 +301,19 @@ class Profile:
         
 class NotificationSettings:
     @staticmethod
-    def get(user_id: int) -> tuple:
+    def get(user_id: str) -> tuple:
         """
         Retrieve information about a specific notificationsetting.
 
         Args:
-            user_id (int): The ID of the user.
+            user_id (str): The ID of the user.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the user_id to an int
+        user_id = int(user_id)
+
         session = Session()
         # Find the foreign id in the user table
         settings_foreign_id = session.query(UserDOA.notification_id).filter(UserDOA.id == user_id).scalar()
@@ -304,10 +348,12 @@ class NotificationSettings:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the notification_id to an int
+        notification_id = int(notification_id)
+        
         session = Session()
         settings = session.query(NotificationSettingsDAO).filter(NotificationSettingsDAO.id == notification_id).first()
         if settings:
-            settings.user_id = UserDOA.id
             settings.chat_notification = body.get('chat_notification', settings.chat_notification)
             settings.forum_notification = body.get('forum_notification',settings.forum_notification)
             settings.review_notification = body.get('review_notification',settings.review_notification)
