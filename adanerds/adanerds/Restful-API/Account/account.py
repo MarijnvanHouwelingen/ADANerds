@@ -135,11 +135,11 @@ class User:
         session = Session()
         user = session.query(UserDOA).filter(UserDOA.id == user_id).first()
         if user:
-            user.user_name = body.get('user_name', user.user_name)
-            user.first_name = body.get('first_name', user.first_name)
-            user.last_name = body.get('last_name', user.last_name)
-            user.email_address = body.get('email_address', user.email_address)
-            user.password = body.get('password', user.password)  # Again, consider hashing
+            user.user_name = body.get('user_name', body["user_name"])
+            user.first_name = body.get('first_name', body["first_name"])
+            user.last_name = body.get('last_name', body["last_name"])
+            user.email_address = body.get('email_address', body["email_address"])
+            user.password = body.get('password', body["password"])  # Again, consider hashing
             session.commit()
             session.close()
             return jsonify({'message': 'User updated successfully'}), 200

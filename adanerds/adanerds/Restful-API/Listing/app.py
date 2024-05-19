@@ -2,13 +2,13 @@ import logging
 import os
 
 import connexion
-
 from flask_cors import CORS
+
 from db import Base, engine
 logging.basicConfig(level=logging.INFO)
 app = connexion.App(__name__, specification_dir="openapi/")
 Base.metadata.create_all(engine)
-app.add_api('account-api.yaml')
+app.add_api('listing-api.yaml')
 
 # Initialize CORS
 CORS(app.app)

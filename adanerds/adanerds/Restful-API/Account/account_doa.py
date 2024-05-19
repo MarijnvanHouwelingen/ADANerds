@@ -1,8 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.orm import relationship,backref
 from db import Base
-from typing import Any
-
 
 # Define the NotificationSettingsDAO
 class NotificationSettingsDAO(Base):

@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify
-from google.cloud import storage
+from flask import Flask, jsonify
 import json 
 import base64
 import functions_framework
