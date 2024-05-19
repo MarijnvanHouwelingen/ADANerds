@@ -5,10 +5,11 @@ import connexion
 from flask_cors import CORS
 
 from db import Base, engine
+from booking import Booking # noqa
 logging.basicConfig(level=logging.INFO)
 app = connexion.App(__name__, specification_dir="openapi/")
 Base.metadata.create_all(engine)
-app.add_api('account-api.yaml')
+app.add_api('booking-api.yaml')
 
 # Initialize CORS
 CORS(app.app)
