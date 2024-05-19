@@ -2,12 +2,23 @@ from datetime import datetime,date
 from flask import jsonify
 
 import os
-from daos.listing_doa import ListingDOA
+from listing_doa import ListingDOA
 from db import Session
-from daos.account_doa import UserDOA
+from sqlalchemy.sql import text
 
 # The listing publish event function
-from FAAS.picture_service.main import publish_listing_event 
+from listing_sub import publish_listing_event 
+
+
+class DataManager:
+    @staticmethod
+    def get_next_id(table_name: str) -> int:
+        session = Session()
+        query = text(f'SELECT MAX(id) as max_id FROM {table_name}')
+        result = session.execute(query).fetchone()
+        print(result)
+        return int((result[0] or 0) + 1)
+    
 class Listing:
     @staticmethod
     def create(body:dict) -> tuple:
@@ -21,15 +32,18 @@ class Listing:
             tuple: A tuple containing JSON response and HTTP status code.
         """
         try:
+            listing_id = DataManager.get_next_id(ListingDOA.__tablename__)
+            
             session = Session()
             listing = ListingDOA(
-                begin_date=body['begin_date'],
-                end_date=body['end_date'],
+                id = listing_id,
+                begin_date=datetime.strptime(body['begin_date'],'%Y-%m-%d'),
+                end_date=datetime.strptime(body['end_date'],'%Y-%m-%d'),
                 status=body['status'], 
                 price=body['price'],
                 capacity=body['capacity'],
-                available_from=body['available_from'],
-                available_to=body['available_to'],
+                available_from=datetime.strptime(body['available_from'],'%Y-%m-%d'),
+                available_to=datetime.strptime(body['available_to'],'%Y-%m-%d'),
                 created_at= datetime.today(),
                 updated_at = datetime.fromisoformat('1000-01-01')
             )
@@ -39,19 +53,17 @@ class Listing:
             # Publish the listing event after the listing is created
             listing_data = {
                 "id": listing.id,
-                "begin_date": listing.begin_date,
-                "end_date": listing.end_date,
+                "begin_date": listing.begin_date.isoformat(),
+                "end_date": listing.end_date.isoformat(),
                 "status": listing.status,
                 "price": listing.price,
                 "capacity": listing.capacity,
-                "available_from": listing.available_from,
-                "available_to": listing.available_to,
-                "created_at": listing.created_at,
-                "updated_at": listing.updated_at
+                "available_from": listing.available_from.isoformat(),
+                "available_to": listing.available_to.isoformat()
             }
             
-            project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
-            listing_topic_id = os.getenv('LISTING_TOPIC_ID')
+            project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') or 'emerald-diagram-413020'
+            listing_topic_id = os.getenv('LISTING_TOPIC_ID') or 'update_listing'
 
             publish_listing_event(project_id=project_id,listing_topic_id=listing_topic_id,listing_data=listing_data)
             
@@ -75,17 +87,22 @@ class Listing:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+
+        # Cast the listing_id to an int
+        listing_id = int(listing_id)
+
+
         session = Session()
         listing = session.query(ListingDOA).filter(ListingDOA.id == listing_id).first()
         if listing:
             listing_info = {
-                "begin_date": listing.begin_date,
-                "end_date": listing.end_date,
+                "begin_date": listing.begin_date.isoformat(),
+                "end_date": listing.end_date.isoformat(),
                 "status": listing.status,
                 "price": listing.price,
                 "capacity": listing.capacity,
-                "available_from": listing.available_from,
-                "available_to": listing.available_to,
+                "available_from": listing.available_from.isoformat(),
+                "available_to": listing.available_to.isoformat(),
                 "created_at": listing.created_at.isoformat(),
                 "updated_at": listing.updated_at.isoformat()
             }
@@ -107,16 +124,20 @@ class Listing:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+
+        # Cast the listing_id to an int
+        listing_id = int(listing_id)
+
         session = Session()
         listing = session.query(ListingDOA).filter(ListingDOA.id == listing_id).first()
         if listing:
-            listing.begin_date = body.get('begin_date', listing.begin_date)
-            listing.end_date = body.get('end_date', listing.begin_date)
-            listing.status = body.get('status', listing.status) 
-            listing.price = body.get('price', listing.price) 
-            listing.capacity = body.get('capacity', listing.capacity)
-            listing.available_from = body.get('available_from', listing.available_from)
-            listing.available_to = body.get('available_to', listing.available_to)
+            listing.begin_date = body.get('begin_date', datetime.strptime(body["begin_date"],'%Y-%m-%d'))
+            listing.end_date = body.get('end_date', datetime.strptime(body['end_date'],'%Y-%m-%d'))
+            listing.status = body.get('status', body["status"]) 
+            listing.price = body.get('price', body["price"]) 
+            listing.capacity = body.get('capacity', body["capacity"])
+            listing.available_from = body.get('available_from', datetime.strptime(body["available_from"],'%Y-%m-%d'))
+            listing.available_to = body.get('available_to', datetime.strptime(body["available_to"],'%Y-%m-%d'))
             listing.updated_at = datetime.today()
             session.commit()
             session.close()
@@ -136,6 +157,10 @@ class Listing:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+
+        # Cast the listing_id to an int
+        listing_id = int(listing_id)
+
         session = Session()
         affected_rows = session.query(ListingDOA).filter(ListingDOA.id == listing_id).delete()
         session.commit()

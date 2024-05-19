@@ -5,15 +5,15 @@
         "args": [
           "build",
           "-t",
-          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1",
-          "./lab4/deliveryservice-bq"
+          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/listing-bq-api:0.0.1",
+          "adanerds/adanerds/Restful-API/Listing/"
         ]
       },
       {
         "name": "gcr.io/cloud-builders/docker",
         "args": [
           "push",
-          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1"
+          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/listing-bq-api:0.0.1"
         ]
       },
       {
@@ -24,7 +24,7 @@
           "deploy",
           "account-service",
           "--image",
-          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1",
+          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/listing-bq-api:0.0.1",
           "--region",
           "us-central1",
           "--platform",
@@ -37,7 +37,7 @@
           "4G",
           "--allow-unauthenticated",
           "--update-env-vars",
-          "DB_URL=bigquery://${_PROJECT_ID}/accountdb"
+          "DB_URL=bigquery://${_PROJECT_ID}/listingdb"
         ]
       }
     ]

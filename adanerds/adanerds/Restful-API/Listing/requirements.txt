@@ -1,0 +1,18 @@
+# RESTFUL API
+flask
+connexion[flask]
+connexion[uvicorn]
+sqlalchemy
+pathlib
+connexion[swagger-ui]
+sqlalchemy-utils
+sqlalchemy-bigquery
+swagger-ui-bundle
+functions-framework
+flask-cors
+
+# FAAS
+functions-framework
+google-cloud-pubsub
+requests
+google-cloud-bigquery-storage
