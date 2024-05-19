@@ -62,8 +62,8 @@ class Listing:
                 "available_to": listing.available_to.isoformat()
             }
             
-            project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') or 'emerald-diagram-413020'
-            listing_topic_id = os.getenv('LISTING_TOPIC_ID') or 'update_listing'
+            project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') 
+            listing_topic_id = os.getenv('LISTING_TOPIC_ID') 
 
             publish_listing_event(project_id=project_id,listing_topic_id=listing_topic_id,listing_data=listing_data)
             

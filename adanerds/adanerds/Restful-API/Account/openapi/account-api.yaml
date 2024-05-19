@@ -363,7 +363,8 @@ components:
         - email_address
       properties:
         id:
-          type: number
+          type: integer
+          format: int64
         user_name:
           format: string
         first_name:
@@ -402,9 +403,11 @@ components:
     ProfileOut:
       properties:
         id:
-          type: number
+          type: integer
+          format: int64
         user_id:
-          format: number
+          type: integer
+          format: int64
         date_of_birth:
           type: string
           format: date
@@ -422,13 +425,13 @@ components:
         - booking_notification
       properties:
         chat_notification:
-          format: boolean
+          type: boolean
         forum_notification:
-          format: boolean
+          type: boolean
         review_notification:
-          format: boolean
+          type: boolean
         booking_notification:
-          format: boolean
+          type: boolean
     NotificationOut:
       required:
         - chat_notification
@@ -437,13 +440,13 @@ components:
         - booking_notification
       properties:
         chat_notification:
-          format: boolean
+          type: boolean
         forum_notification:
-          format: boolean
+          type: boolean
         review_notification:
-          format: boolean
+          type: boolean
         booking_notification:
-          format: boolean
+          type: boolean
     
     AnyMsg:
       required:

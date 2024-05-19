@@ -1,38 +1,45 @@
 from flask import jsonify
 import os
 
-from daos.booking_doa import BookingDOA
+from booking_doa import BookingDOA
 from db import Session
 
-from Listing.listing_doa import ListingDOA
-from sqlalchemy import and_
+from datetime import datetime
+from sqlalchemy.sql import text
+# import the refund publish event
+from booking_pub import publish_refund_event
 
-# import the refund FAAS
-from FAAS.refund_service.main import publish_refund_event
-
+class DataManager:
+    @staticmethod
+    def get_next_id(table_name: str) -> int:
+        session = Session()
+        query = text(f'SELECT MAX(id) as max_id FROM {table_name}')
+        result = session.execute(query).fetchone()
+        print(result)
+        return int((result[0] or 0) + 1)
+    
 class Booking:
     @staticmethod
-    def create(listing_id:int,body:dict) -> tuple:
+    def create(body:dict) -> tuple:
         """
         Create a new booking for a listing.
 
         Args:
-            listing_id (int): The ID of the listing.
             body (dict): The request body containing booking information.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+
         session = Session()
-        listing = session.query(ListingDOA).filter(ListingDOA.id == listing_id).first()
         booking = BookingDOA(
-            begin_date=body['begin_date'],
-            end_date=body['end_date'],
+            id = DataManager.get_next_id(BookingDOA.__tablename__),
+            begin_date= datetime.strptime(body['begin_date'],'%Y-%m-%d'),
+            end_date=datetime.strptime(body['end_date'],'%Y-%m-%d'),
             price=body['price'],  
             refund = False,
             status=body['status'],
-            listing= listing,
-            listing_id=listing_id
+
         )
         session.add(booking)
         session.commit()
@@ -42,27 +49,28 @@ class Booking:
 
     # Get one specific booking based on both the listing_id and booking_id
     @staticmethod
-    def get_one(listing_id:int,booking_id:int) -> tuple:
+    def get_one(booking_id:int) -> tuple:
         """
         Retrieve information about a specific booking.
 
         Args:
-            listing_id (int): The ID of the listing.
             booking_id (int): The ID of the booking.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the booking_id to an int
+        booking_id = int(booking_id)
+
         session = Session()
-        booking = session.query(BookingDOA).filter(and_(BookingDOA.id == booking_id,BookingDOA.listing_id == listing_id)).first()
+        booking = session.query(BookingDOA).filter(BookingDOA.id == booking_id).first()
         if booking:
             booking_info = {
-                "begin_date": booking.begin_date,
-                "end_date": booking.end_date,
+                "begin_date": booking.begin_date.isoformat(),
+                "end_date": booking.end_date.isoformat(),
                 "price": booking.price,
                 "refund": booking.refund,
-                "status": booking.status,
-                "listing_id":booking.listing_id
+                "status": booking.status
             }
             session.close()
             return jsonify(booking_info), 200
@@ -72,64 +80,65 @@ class Booking:
     
     # Get all bookings from one listing
     @staticmethod
-    def get_all(listing_id:int) -> tuple:
+    def get_all() -> tuple:
         """
-        Retrieve all bookings for a specific listing.
+        Retrieve all bookings.
 
         Args:
-            listing_id (int): The ID of the listing.
+        None
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
         session = Session()
-        bookings = session.query(BookingDOA).filter(BookingDOA.listing_id == listing_id).all()
+        bookings = session.query(BookingDOA).all()
         booking_info = []
         if bookings:
             for booking in bookings:
                 booking_info.append({
-                    "begin_date": booking.begin_date,
-                    "end_date": booking.end_date,
+                    "begin_date": booking.begin_date.isoformat(),
+                    "end_date": booking.end_date.isoformat(),
                     "price": booking.price,
                     "refund": booking.refund,
                     "status": booking.status,
-                    "listing_id":booking.listing_id
                 })
             session.close()
             return jsonify(booking_info), 200
         else:
             session.close()
-            return jsonify({'message': f'No bookings found with listing id {listing_id}'}), 404
+            return jsonify({'message': 'No bookings'}), 404
 
     @staticmethod
-    def update(listing_id:int,booking_id:int, body:dict) -> tuple:
+    def update(booking_id:int, body:dict) -> tuple:
         """
         Update information about a specific booking.
 
         Args:
-            listing_id (int): The ID of the listing.
             booking_id (int): The ID of the booking.
             body (dict): The request body containing updated booking information.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the booking_id to an int
+        booking_id = int(booking_id)
+
         session = Session()
-        booking = session.query(BookingDOA).filter(and_(BookingDOA.id == booking_id, BookingDOA.listing_id == listing_id)).first()
+        booking = session.query(BookingDOA).filter(BookingDOA.id == booking_id).first()
         if booking:
-            booking.begin_date = body.get('begin_date', booking.begin_date)
-            booking.end_date = body.get('end_date', booking.end_date)
-            booking.price = body.get('price', booking.price)
-            booking.refund = body.get("refund",booking.refund) 
-            booking.status = body.get('status', booking.status) 
+            booking.begin_date = body.get('begin_date', datetime.strptime(body["begin_date"],'%Y-%m-%d'))
+            booking.end_date = body.get('end_date', datetime.strptime(body['end_date'],'%Y-%m-%d'))
+            booking.price = body.get('price', body["price"])
+            booking.refund = body.get("refund",body["refund"]) 
+            booking.status = body.get('status', body["status"]) 
             session.commit()
             session.refresh(booking)
              # Publish the listing event after the listing is created
             if booking.refund:
                 booking_id = booking.id
                 refund_amount = booking.price
-                project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID')
-                booking_topic_id = os.getenv('BOOKING_TOPIC_ID')
+                project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') or 'emerald-diagram-413020'
+                booking_topic_id = os.getenv('BOOKING_TOPIC_ID') or 'booking_refund'
 
                 publish_refund_event(project_id=project_id,booking_topic_id=booking_topic_id,
                                     booking_id=booking_id,refund_amount=refund_amount)
@@ -140,19 +149,21 @@ class Booking:
             return jsonify({'message': f'No booking found with id {booking_id}'}), 404
 
     @staticmethod
-    def delete(listing_id: int,booking_id: int) -> tuple:
+    def delete(booking_id: int) -> tuple:
         """
         Delete a specific booking.
 
         Args:
-            listing_id (int): The ID of the listing.
             booking_id (int): The ID of the booking.
 
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        # Cast the booking_id to an int
+        booking_id = int(booking_id)
+
         session = Session()
-        affected_rows = session.query(BookingDOA).filter(and_(BookingDOA.id == booking_id,BookingDOA.listing_id == listing_id)).delete()
+        affected_rows = session.query(BookingDOA).filter(BookingDOA.id == booking_id).delete()
         session.commit()
         session.close()
         if affected_rows == 0:

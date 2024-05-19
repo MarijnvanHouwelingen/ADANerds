@@ -5,6 +5,7 @@ import connexion
 from flask_cors import CORS
 
 from db import Base, engine
+from listing import Listing # noqa
 logging.basicConfig(level=logging.INFO)
 app = connexion.App(__name__, specification_dir="openapi/")
 Base.metadata.create_all(engine)

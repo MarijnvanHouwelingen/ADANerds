@@ -7,32 +7,56 @@ info:
 servers:
   - url: http://localhost:5000/v1.0
 paths:
-  /listings:
+  /bookings:
     post:
-      summary: Create a listing
-      operationId: listing.Listing.create
+      summary: Create a Booking
+      operationId: booking.Booking.create
       tags:
-        - Listing
+        - Booking
       requestBody:
-        description: Listing information
+        description: Booking information
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ListingIn"
+              $ref: "#/components/schemas/BookingIn"
       responses:
         '200':
-          description: Created Listing
+          description: Created Booking
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  listing_id:
+                  booking_id:
                     type: string
-                    description: The Listing ID
+                    description: The Booking ID
         '500':
-          description: Listing with the same listing ID already exists
+          description: Listing with the same Booking ID already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Get all Bookings of one listing
+      operationId: booking.Booking.get_all
+      tags:
+        - Booking
+      responses:
+        '200':
+          description: Booking information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingOut"
+        '404':
+          description: Booking not found
           content:
             application/json:
               schema:
@@ -44,27 +68,27 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
-  /listings/{listing_id}:
+  /bookings/{booking_id}:
     get:
-      summary: Get a Listing
-      operationId: listing.Listing.get
+      summary: Get a Booking
+      operationId: booking.Booking.get_one
       tags:
-        - Listing
+        - Booking
       parameters:
-        - name: listing_id
+        - name: booking_id
           in: path
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Listing information
+          description: Booking information
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ListingOut"
+                $ref: "#/components/schemas/BookingOut"
         '404':
-          description: Listing not found
+          description: Booking not found
           content:
             application/json:
               schema:
@@ -76,31 +100,31 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     put:
-      summary: Update a Listing
-      operationId: listing.Listing.update
+      summary: Update a Booking
+      operationId: booking.Booking.update
       tags:
-        - User
+        - Booking
       parameters:
-        - name: listing_id
+        - name: booking_id
           in: path
           required: true
           schema:
             type: string
       requestBody:
-        description: New Listing Information
+        description: New Booking Information
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/ListingIn"
+              $ref: "#/components/schemas/BookingIn"
       responses:
         '200':
-          description: Listing Updated
+          description: Booking Updated
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AnyMsg"
         '404':
-          description: Listing not found
+          description: Booking not found
           content:
             application/json:
               schema:
@@ -112,25 +136,25 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     delete:
-      summary: Delete a Listing
-      operationId: listing.Listing.delete
+      summary: Delete a Booking
+      operationId: booking.Booking.delete
       tags:
-        - Listing
+        - Booking
       parameters:
-        - name: listing_id
+        - name: booking_id
           in: path
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Listing Deleted
+          description: Booking Deleted
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/AnyMsg"
         '404':
-          description: Listing not found
+          description: Booking not found
           content:
             application/json:
               schema:
@@ -140,49 +164,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Error"
+                $ref: "#/components/schemas/Error"  
   
 # Additional paths would be defined here for Profile and NotificationSettings with similar structure
 # following the example of the Delivery API.
 
 components:
   schemas:
-    ListingIn:
-      required:
-        - begin_date
-        - end_date
-        - status
-        - price
-        - capacity
-        - available_from
-        - available_to
-      properties:
-        begin_date:
-          format: date
-        end_date:
-          format: date
-        status:
-          type: integer
-          format: int64
-        price:
-          type: number
-          format: float
-        capacity:
-          type: number
-          format: float
-        available_from:
-          format: date
-        available_to:
-          format: date
-    ListingOut:
-      required:
+    BookingIn:
+      required: 
         - begin_date
         - end_date
         - price
         - status
-        - capacity
-        - available_from
-        - available_to
       properties:
         begin_date:
           format: date
@@ -194,13 +188,26 @@ components:
         status:
           type: integer
           format: int64
-        capacity:
+        refund:
+          type: boolean
+        
+
+    BookingOut:
+      required:
+        - begin_date
+        - end_date
+        - price
+        - status
+      properties:
+        begin_date:
+          format: date
+        end_date:
+          format: date
+        price:
           type: number
           format: float
-        available_from:
-          format: date
-        available_to:
-          format: date
+        status:
+          format: integer
     Error:
       required:
         - code
