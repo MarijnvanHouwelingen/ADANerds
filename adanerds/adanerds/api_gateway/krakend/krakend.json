@@ -2,12 +2,12 @@
     "$schema": "http://www.krakend.io/schema/v3.json",
     "version": 3,
     "output_encoding": "json",
-    "name": "API",
+    "name": "krakend API Gateway",
     "port": 8081,
     "endpoints": [
         {
-            "endpoint": "/authentication",
-            "method": "GET",
+            "endpoint": "/authentication/register",
+            "method": "POST",
             "output_encoding": "json",
             "backend": [
             {
@@ -18,9 +18,32 @@
                 "http://authentication_service:5000/"
                 ],
                 "disable_host_sanitize": false
-            },
+            }
+            ]
+        },
+        {
+            "endpoint": "/authentication/login",
+            "method": "POST",
+            "output_encoding": "json",
+            "backend": [
             {
                 "url_pattern": "/login",
+                "encoding": "json",
+                "method": "POST",
+                "host": [
+                "http://authentication_service:5000/"
+                ],
+                "disable_host_sanitize": false
+            }
+            ]
+        },
+        {
+            "endpoint": "/authentication/verify",
+            "method": "POST",
+            "output_encoding": "json",
+            "backend": [
+            {
+                "url_pattern": "/verify",
                 "encoding": "json",
                 "method": "POST",
                 "host": [
