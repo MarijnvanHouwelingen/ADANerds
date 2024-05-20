@@ -1,0 +1,237 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: User Management Service
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:5000/v1.0
+paths:
+  /bookings:
+    post:
+      summary: Create a Booking
+      operationId: booking.Booking.create
+      tags:
+        - Booking
+      requestBody:
+        description: Booking information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingIn"
+      responses:
+        '200':
+          description: Created Booking
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  booking_id:
+                    type: string
+                    description: The Booking ID
+        '500':
+          description: Listing with the same Booking ID already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      summary: Get all Bookings of one listing
+      operationId: booking.Booking.get_all
+      tags:
+        - Booking
+      responses:
+        '200':
+          description: Booking information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingOut"
+        '404':
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /bookings/{booking_id}:
+    get:
+      summary: Get a Booking
+      operationId: booking.Booking.get_one
+      tags:
+        - Booking
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Booking information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingOut"
+        '404':
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a Booking
+      operationId: booking.Booking.update
+      tags:
+        - Booking
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: New Booking Information
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BookingIn"
+      responses:
+        '200':
+          description: Booking Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a Booking
+      operationId: booking.Booking.delete
+      tags:
+        - Booking
+      parameters:
+        - name: booking_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Booking Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"  
+  
+# Additional paths would be defined here for Profile and NotificationSettings with similar structure
+# following the example of the Delivery API.
+
+components:
+  schemas:
+    BookingIn:
+      required: 
+        - begin_date
+        - end_date
+        - price
+        - status
+      properties:
+        begin_date:
+          format: date
+        end_date:
+          format: date
+        price:
+          type: number
+          format: float
+        status:
+          type: integer
+          format: int64
+        refund:
+          type: boolean
+        
+
+    BookingOut:
+      required:
+        - begin_date
+        - end_date
+        - price
+        - status
+      properties:
+        begin_date:
+          format: date
+        end_date:
+          format: date
+        price:
+          type: number
+          format: float
+        status:
+          format: integer
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+    AnyMsg:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          format: string
+    # Error and AnyMsg schemas already defined...
+
+# Additional details may need to be adjusted
+
+    
+      
+

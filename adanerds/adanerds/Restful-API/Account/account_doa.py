@@ -1,8 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.orm import relationship,backref
 from db import Base
-from typing import Any
-
 
 # Define the NotificationSettingsDAO
 class NotificationSettingsDAO(Base):
@@ -26,11 +24,13 @@ class NotificationSettingsDAO(Base):
 
     def __init__(
         self,
+        id:int,
         chat_notification: bool = False,
         forum_notification: bool = False,
         review_notification: bool = False,
         booking_notification: bool = False
     ) -> None:
+        self.id = id
         self.date_of_birth = chat_notification
         self.gender = forum_notification
         self.phone_number = review_notification
@@ -64,18 +64,20 @@ class UserDOA(Base):
     notification_id: int = Column(Integer, ForeignKey("notification_settings.id"))
 
     # Define the relationships for the User DOA
-    notification_settings: NotificationSettingsDAO = relationship(NotificationSettingsDAO.__name__, backref=backref('users',uselist=False))
+    notification_settings = relationship(NotificationSettingsDAO.__name__, backref=backref('users',uselist=False))
     
     def __init__(
         self,
+        id:int,
         user_name: str,
         first_name: str,
         last_name: str,
         email_address: str,
         password: str,
-        notification_settings: NotificationSettingsDAO,
+        notification_settings,
         notification_id: int 
     ) -> None:
+        self.id = id
         self.user_name = user_name
         self.first_name = first_name
         self.last_name = last_name
@@ -112,17 +114,19 @@ class ProfileDAO(Base):
     user_id: int = Column(Integer, ForeignKey("users.id"))
 
     # Relationship for the Profile DOA
-    user: Any = relationship(UserDOA.__name__, backref = backref('profiles',uselist=False))
+    user = relationship(UserDOA.__name__, backref = backref('profiles',uselist=False))
     
     def __init__(
         self,
+        id:int,
         date_of_birth: Date,
         gender: str,
         phone_number: str,
         address: str,
-        user: UserDOA = None,
+        user = None,
         user_id: int = None
     ) -> None:
+        self.id = id,
         self.date_of_birth = date_of_birth
         self.gender = gender
         self.phone_number = phone_number

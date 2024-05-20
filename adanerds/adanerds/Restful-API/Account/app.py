@@ -3,12 +3,10 @@ import os
 import requests
 
 import connexion
-from connexion.resolver import RestyResolver
-from resources.account import User,Profile,NotificationSettings
-from resources.listing  import Listing
-from resources.booking import Booking
+
 from flask_cors import CORS
 from db import Base, engine
+from account import User,Profile,NotificationSettings # noqa
 logging.basicConfig(level=logging.INFO)
 app = connexion.App(__name__, specification_dir="openapi/")
 Base.metadata.create_all(engine)

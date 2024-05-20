@@ -1,33 +1,11 @@
-name: Python Linting with Ruff
-
-on:
-  push:
-    branches:
-      - main
-      - master
-  pull_request:
-    branches:
-      - main
-      - master
-
+name: Python linting
+on: [ push, pull_request ]
 jobs:
-  lint:
-    name: Python Lint
+  ruff:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: chartboost/ruff-action@v1
+        with:
+          src: "adanerds/adanerds"
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.x' # Specify the Python version here
-
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install ruff # Install Ruff
-
-    - name: Run Ruff
-      run: ruff check adanerds/adanerds --fix

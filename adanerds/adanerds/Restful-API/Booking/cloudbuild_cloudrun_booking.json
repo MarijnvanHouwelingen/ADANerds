@@ -1,0 +1,44 @@
+{
+    "steps": [	
+      {
+        "name": "gcr.io/cloud-builders/docker",
+        "args": [
+          "build",
+          "-t",
+          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/booking-bq-api:0.0.1",
+          "adanerds/adanerds/Restful-API/Booking/"
+        ]
+      },
+      {
+        "name": "gcr.io/cloud-builders/docker",
+        "args": [
+          "push",
+          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/booking-bq-api:0.0.1"
+        ]
+      },
+      {
+        "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+        "entrypoint": "gcloud",
+         "args": [
+          "run",
+          "deploy",
+          "booking-service",
+          "--image",
+          "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/booking-bq-api:0.0.1",
+          "--region",
+          "us-central1",
+          "--platform",
+          "managed",
+          "--port",
+          "5000",
+          "--cpu",
+          "2",
+          "--memory",
+          "4G",
+          "--allow-unauthenticated",
+          "--update-env-vars",
+          "DB_URL=bigquery://${_PROJECT_ID}/bookingdb"
+        ]
+      }
+    ]
+  }

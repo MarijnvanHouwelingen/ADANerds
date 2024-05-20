@@ -1,0 +1,230 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: User Management Service
+  license:
+    name: MIT
+servers:
+  - url: http://localhost:5000/v1.0
+paths:
+  /listings:
+    post:
+      summary: Create a listing
+      operationId: listing.Listing.create
+      tags:
+        - Listing
+      requestBody:
+        description: Listing information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingIn"
+      responses:
+        '200':
+          description: Created Listing
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  listing_id:
+                    type: string
+                    description: The Listing ID
+        '500':
+          description: Listing with the same listing ID already exists
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /listings/{listing_id}:
+    get:
+      summary: Get a Listing
+      operationId: listing.Listing.get
+      tags:
+        - Listing
+      parameters:
+        - name: listing_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Listing information
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ListingOut"
+        '404':
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      summary: Update a Listing
+      operationId: listing.Listing.update
+      tags:
+        - User
+      parameters:
+        - name: listing_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: New Listing Information
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ListingIn"
+      responses:
+        '200':
+          description: Listing Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      summary: Delete a Listing
+      operationId: listing.Listing.delete
+      tags:
+        - Listing
+      parameters:
+        - name: listing_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Listing Deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AnyMsg"
+        '404':
+          description: Listing not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  
+# Additional paths would be defined here for Profile and NotificationSettings with similar structure
+# following the example of the Delivery API.
+
+components:
+  schemas:
+    ListingIn:
+      required:
+        - begin_date
+        - end_date
+        - status
+        - price
+        - capacity
+        - available_from
+        - available_to
+      properties:
+        begin_date:
+          format: date
+        end_date:
+          format: date
+        status:
+          type: integer
+          format: int64
+        price:
+          type: number
+          format: float
+        capacity:
+          type: number
+          format: float
+        available_from:
+          format: date
+        available_to:
+          format: date
+    ListingOut:
+      required:
+        - begin_date
+        - end_date
+        - price
+        - status
+        - capacity
+        - available_from
+        - available_to
+      properties:
+        begin_date:
+          format: date
+        end_date:
+          format: date
+        price:
+          type: number
+          format: float
+        status:
+          type: integer
+          format: int64
+        capacity:
+          type: number
+          format: float
+        available_from:
+          format: date
+        available_to:
+          format: date
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          type: string
+    AnyMsg:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int64
+        message:
+          format: string
+    # Error and AnyMsg schemas already defined...
+
+# Additional details may need to be adjusted
+
+    
+      
+

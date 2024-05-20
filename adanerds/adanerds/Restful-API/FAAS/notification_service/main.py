@@ -1,13 +1,12 @@
-from flask import Flask, request, jsonify
-from google.cloud import storage
+from flask import Flask, jsonify
 import json 
 import base64
 import functions_framework
-from pub_sub.pub_sub import create_topic, publish_message, create_subscription
+from pub_sub import create_topic, publish_message, create_subscription
 
 app = Flask(__name__)
 
-project_id = "" # id of project
+project_id = "emerald-diagram-413020" # id of project
 
 account_topic_id = "report_users"
 account_subscription_id = "account-service-subscription"
