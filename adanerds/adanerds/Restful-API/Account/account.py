@@ -69,7 +69,7 @@ class User:
             }
             
             project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') 
-            account_listing_id = os.getenv('LISTING_TOPIC_ID') 
+            account_listing_id = os.getenv('ACCOUNT_TOPIC_ID') 
 
             publish_account_event(project_id=project_id,account_topic_id=account_listing_id,account_data=user_data)
             

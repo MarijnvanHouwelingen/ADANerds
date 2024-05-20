@@ -7,7 +7,7 @@ from db import Session
 from sqlalchemy.sql import text
 
 # The listing publish event function
-from listing_sub import publish_listing_event 
+from listing_pub import publish_listing_event 
 
 
 class DataManager:

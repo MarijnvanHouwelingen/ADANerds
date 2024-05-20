@@ -7,30 +7,17 @@ from pub_sub import create_topic, publish_message, create_subscription
 
 app = Flask(__name__)
 
-project_id = "emerald-diagram-413020" # id of project
-bucket_name =  'picture_ass2' # name of bucket
+project_id = "emerald-diagram-413020"
+bucket_name =  'picture_ass2' 
 
 client = storage.Client()
-bucket = client.bucket(bucket_name) # name of bucket
+bucket = client.bucket(bucket_name) 
 
 listing_topic_id = 'update_listing'
 listing_subscription_id = 'listing-service-subscription'
 
 create_topic(project_id, listing_topic_id)
 create_subscription(project_id, listing_topic_id, listing_subscription_id)
-
-def publish_listing_event(project_id, listing_topic_id, listing_data): #####, Add information from bounded context, like listing_id, etc): #####
-    '''
-    This function is responsible for publishing listing information from the listing bounded context to the event bus. It should be 
-    integrated into the listing bounded context service to publish listing events whenever a listing is initiated. 
-    (Pub_Listing in Component Diagram)
-    '''
-    listing_event = {
-        "type": "Listing",
-        "data": listing_data ##### Add the variable which are initalized in the function here (see listing_doa.py) #####
-    }
-    publish_message(project_id, listing_topic_id, listing_event) # Pub_Listing
-    print(f"Published listing event for listing ID {listing_data}")
 
 @functions_framework.cloud_event
 def handle_listing_event(cloud_event):
@@ -44,8 +31,8 @@ def handle_listing_event(cloud_event):
     print(f'Message data: {message_data}')
 
     if message_data['type'] == "Listing":
-        ##### Get the same information that is stored in the event bus
-        return "", 200
+        listing_id = message_data['data']['id']
+        return jsonify({'message': f'Listing with ID {listing_id} has been created/updated.'}), 200
 
     return jsonify({'error': 'We apologize, but we are unable to get the listing information at this time.'})
 
