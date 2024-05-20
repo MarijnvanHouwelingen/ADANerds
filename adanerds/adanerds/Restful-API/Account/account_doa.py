@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
 from sqlalchemy.orm import relationship,backref
 from db import Base
-
+from typing import Optional
 # Define the NotificationSettingsDAO
 class NotificationSettingsDAO(Base):
     """
@@ -49,6 +49,7 @@ class UserDOA(Base):
         last_name (str): The last name of the user.
         email_address (str): The unique email address of the user.
         password (str): The password of the user.
+        Report (bool): Boolean value that represents if a user has been reported
         notification_id (Optional[int]): The foreign key referencing the user's notification settings.
         notification_settings (Optional[NotificationSettingsDAO]): The relationship to the associated notification settings.
     """
@@ -59,7 +60,7 @@ class UserDOA(Base):
     last_name: str = Column(String, nullable=False)
     email_address: str = Column(String, unique=True, nullable=False)
     password: str = Column(String, nullable=False)
-
+    report:Optional[bool] = Column(Boolean)
     # foreign key
     notification_id: int = Column(Integer, ForeignKey("notification_settings.id"))
 
@@ -74,6 +75,7 @@ class UserDOA(Base):
         last_name: str,
         email_address: str,
         password: str,
+        report:bool,
         notification_settings,
         notification_id: int 
     ) -> None:
@@ -83,7 +85,7 @@ class UserDOA(Base):
         self.last_name = last_name
         self.email_address = email_address
         self.password = password
-
+        self.report = report
         # Relationship User and notification_settings
         self.notification_settings = notification_settings
         self.notification_id = notification_id
