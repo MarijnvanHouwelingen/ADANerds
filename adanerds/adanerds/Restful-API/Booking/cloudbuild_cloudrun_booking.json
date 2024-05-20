@@ -22,7 +22,7 @@
          "args": [
           "run",
           "deploy",
-          "listing-service",
+          "booking-service",
           "--image",
           "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/booking-bq-api:0.0.1",
           "--region",
