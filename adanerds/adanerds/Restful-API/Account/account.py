@@ -61,8 +61,8 @@ class User:
             return jsonify({'user_id': user.id}), 200
         except Exception as e:
             session.rollback()
-            print(f"Error creating listing: {e}")
-            return jsonify({'error': 'An error occurred while creating the listing'}), 500
+            print(f"Error creating user: {e}")
+            return jsonify({'error': 'An error occurred while creating the user'}), 500
         finally:
             session.close()
             
