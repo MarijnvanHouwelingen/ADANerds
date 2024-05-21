@@ -18,7 +18,7 @@ class LoginAPI:
             user = session.query(UserDAO).filter(UserDAO.email == post_data.get('email')).first()
             session.close()
             if user and bcrypt.checkpw(
-                   post_data.get('password').encode('utf-8'), user.password
+                   post_data.get('password').encode('utf-8'), user.password.encode('utf-8')
             ):
                 auth_token = encode_auth_token(user.id)
                 if auth_token:

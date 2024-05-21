@@ -3,7 +3,9 @@ from flask import jsonify, make_response
 from daos.user_dao import UserDAO
 from db import Session
 from jwtutil import encode_auth_token, decode_auth_token
+import logging
 
+logging.basicConfig(level=logging.INFO)
 
 # see https://realpython.com/token-based-authentication-with-flask/
 
@@ -13,7 +15,7 @@ class User:
     def create(post_data):
         session = Session()
         # check if user already exists
-        user = session.query(UserDAO).filter(UserDAO.id == post_data.get('email')).first()
+        user = session.query(UserDAO).filter(UserDAO.email == post_data.get('email')).first()
         if not user:
             try:
                 user = UserDAO(
@@ -55,7 +57,7 @@ class User:
             auth_token = ''
         if auth_token:
             resp = decode_auth_token(auth_token)
-            if not isinstance(resp, str):
+            if isinstance(resp, str):
                 session = Session()
                 # check if user already exists
                 user = session.query(UserDAO).filter(UserDAO.id == resp).first()

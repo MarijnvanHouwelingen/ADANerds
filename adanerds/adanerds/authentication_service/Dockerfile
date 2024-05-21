@@ -6,12 +6,17 @@ WORKDIR /usr/src/myapp
 COPY requirements.txt .
 # Install required python packages
 RUN pip install --no-cache-dir -r requirements.txt
-# Copy all files in training-db local host directory to /usr/src/myapp in Docker container
+
+# Set the environment variable for Google Cloud authentication
+ENV GOOGLE_APPLICATION_CREDENTIALS my-service-account.json
+
 COPY . .
 # Expose the port that our app runs in
 EXPOSE 5000
-# Enviroment Variables
-ENV DB_URL  sqlite:///user.db
-ENV SECRET_KEY  key.txt
+
+# General Enviroment Variables
+ENV DB_URL bigquery://emerald-diagram-413020/userdb
+ENV GOOGLE_CLOUD_PROJECT_ID emerald-diagram-413020
+
 # Run our App
 CMD ["python3","app.py"]
