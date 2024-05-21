@@ -1,21 +1,11 @@
 {
     "steps": [
         {
-            "name": "python:3.9",
-            "id": "replace-hosts",
-            "entrypoint": "python",
-            "args": [
-                "adanerds/adanerds/api_gateway/replace_hosts.py",
-                "adanerds/adanerds/api_gateway/krakend/krakend.json",
-                "http://new_host:5000/"
-            ]
-        },
-        {
             "name": "gcr.io/cloud-builders/docker",
             "args": [
                 "build",
                 "-t",
-                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/api-gateway:0.0.1",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1",
                 "adanerds/adanerds/api_gateway/"
             ]
         },
@@ -23,7 +13,7 @@
             "name": "gcr.io/cloud-builders/docker",
             "args": [
                 "push",
-                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/api-gateway:0.0.1"
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1"
             ]
         },
         {
@@ -32,22 +22,22 @@
             "args": [
                 "run",
                 "deploy",
-                "auth-service",
+                "api-gateway",
                 "--image",
-                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/api-gateway:0.0.1",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1",
                 "--region",
                 "us-central1",
                 "--platform",
                 "managed",
                 "--port",
-                "5000",
+                "8081",
                 "--cpu",
                 "2",
                 "--memory",
                 "4G",
                 "--allow-unauthenticated",
                 "--update-env-vars",
-                "DB_URL=bigquery://${_PROJECT_ID}/userdb"
+                "DB_URL=bigquery://emerald-diagram-413020/userdb"
             ]
         }
     ]

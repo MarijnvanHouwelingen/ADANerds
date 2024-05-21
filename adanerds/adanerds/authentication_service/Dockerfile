@@ -7,9 +7,6 @@ COPY requirements.txt .
 # Install required python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set the environment variable for Google Cloud authentication
-ENV GOOGLE_APPLICATION_CREDENTIALS my-service-account.json
-
 COPY . .
 # Expose the port that our app runs in
 EXPOSE 5000
