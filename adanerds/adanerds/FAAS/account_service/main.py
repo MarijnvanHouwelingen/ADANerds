@@ -11,8 +11,9 @@ project_id = "emerald-diagram-413020"
 account_topic_id = "report_users"
 account_subscription_id = "account-service-subscription"
 
-create_topic(project_id, account_topic_id)
-create_subscription(project_id, account_topic_id, account_subscription_id)
+# Aleady created topic and subscription
+# create_topic(project_id, account_topic_id)
+# create_subscription(project_id, account_topic_id, account_subscription_id)
 
 @functions_framework.cloud_event
 def handle_account_event(cloud_event):

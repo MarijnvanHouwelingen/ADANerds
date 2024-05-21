@@ -16,8 +16,9 @@ bucket = client.bucket(bucket_name)
 listing_topic_id = 'update_listing'
 listing_subscription_id = 'listing-service-subscription'
 
-create_topic(project_id, listing_topic_id)
-create_subscription(project_id, listing_topic_id, listing_subscription_id)
+# Already created topic and subscription
+#create_topic(project_id, listing_topic_id)
+#create_subscription(project_id, listing_topic_id, listing_subscription_id)
 
 @functions_framework.cloud_event
 def handle_listing_event(cloud_event):
@@ -36,7 +37,7 @@ def handle_listing_event(cloud_event):
 
     return jsonify({'error': 'We apologize, but we are unable to get the listing information at this time.'})
 
-@app.route('listings/pictures', methods=['POST', 'GET'])
+@app.route('/listings/pictures', methods=['POST', 'GET'])
 def pictures():
     '''
     This function is designed to POST and GET images from a specified google cloud bucket

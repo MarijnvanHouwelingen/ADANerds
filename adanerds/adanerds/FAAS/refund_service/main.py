@@ -10,9 +10,10 @@ booking_topic_id = 'booking_refund'
 refund_subscription_id = 'refund-service-subscription'
 refund_status_topic_id = 'refund_status'
 
-create_topic(project_id, booking_topic_id)
-create_subscription(project_id, booking_topic_id, refund_subscription_id)
-create_topic(project_id, refund_status_topic_id)
+# Already created topic and subscription
+#create_topic(project_id, booking_topic_id)
+#create_subscription(project_id, booking_topic_id, refund_subscription_id)
+#create_topic(project_id, refund_status_topic_id)
 
 @functions_framework.cloud_event
 def handle_refund_event(cloud_event):
