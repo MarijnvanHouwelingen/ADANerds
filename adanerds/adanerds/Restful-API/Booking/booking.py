@@ -1,8 +1,10 @@
-from flask import jsonify
+from flask import jsonify,request
 import os
 
 from booking_doa import BookingDOA
 from db import Session
+
+import requests 
 
 from datetime import datetime
 from sqlalchemy.sql import text
@@ -18,6 +20,20 @@ class DataManager:
         print(result)
         return int((result[0] or 0) + 1)
     
+    def check_if_authorize(req):
+        auth_header = req.headers['Authorization']
+        try:
+            auth_url = os.environ['AUTH_URL']
+        except Exception as e:
+            print("No Environmental Variable has been given")
+        result = requests.post(auth_url,
+                            headers={'Content-Type': 'application/json',
+                                        'Authorization': auth_header})
+        status_code = result.status_code
+        print(status_code)
+        print(result.json())
+        return status_code
+    
 class Booking:
     @staticmethod
     def create(body:dict) -> tuple:
@@ -30,22 +46,23 @@ class Booking:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
+        if DataManager.check_if_authorize(request) == 200:
+            session = Session()
+            booking = BookingDOA(
+                id = DataManager.get_next_id(BookingDOA.__tablename__),
+                begin_date= datetime.strptime(body['begin_date'],'%Y-%m-%d'),
+                end_date=datetime.strptime(body['end_date'],'%Y-%m-%d'),
+                price=body['price'],  
+                refund = False,
+                status=body['status'],
 
-        session = Session()
-        booking = BookingDOA(
-            id = DataManager.get_next_id(BookingDOA.__tablename__),
-            begin_date= datetime.strptime(body['begin_date'],'%Y-%m-%d'),
-            end_date=datetime.strptime(body['end_date'],'%Y-%m-%d'),
-            price=body['price'],  
-            refund = False,
-            status=body['status'],
-
-        )
-        session.add(booking)
-        session.commit()
-        session.refresh(booking)
-        session.close()
-        return jsonify({'booking_id': booking.id}), 200
+            )
+            session.add(booking)
+            session.commit()
+            session.refresh(booking)
+            session.close()
+            return jsonify({'booking_id': booking.id}), 200
+        return jsonify({'message': 'Invalid Authorization'}), 401
 
     # Get one specific booking based on both the listing_id and booking_id
     @staticmethod
@@ -59,24 +76,26 @@ class Booking:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
-        # Cast the booking_id to an int
-        booking_id = int(booking_id)
+        if DataManager.check_if_authorize(request) == 200:
+            # Cast the booking_id to an int
+            booking_id = int(booking_id)
 
-        session = Session()
-        booking = session.query(BookingDOA).filter(BookingDOA.id == booking_id).first()
-        if booking:
-            booking_info = {
-                "begin_date": booking.begin_date.isoformat(),
-                "end_date": booking.end_date.isoformat(),
-                "price": booking.price,
-                "refund": booking.refund,
-                "status": booking.status
-            }
-            session.close()
-            return jsonify(booking_info), 200
-        else:
-            session.close()
-            return jsonify({'message': f'No booking found with id {booking_id}'}), 404
+            session = Session()
+            booking = session.query(BookingDOA).filter(BookingDOA.id == booking_id).first()
+            if booking:
+                booking_info = {
+                    "begin_date": booking.begin_date.isoformat(),
+                    "end_date": booking.end_date.isoformat(),
+                    "price": booking.price,
+                    "refund": booking.refund,
+                    "status": booking.status
+                }
+                session.close()
+                return jsonify(booking_info), 200
+            else:
+                session.close()
+                return jsonify({'message': f'No booking found with id {booking_id}'}), 404
+        return jsonify({'message': 'Invalid Authorization'}), 401
     
     # Get all bookings from one listing
     @staticmethod
@@ -90,23 +109,25 @@ class Booking:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
-        session = Session()
-        bookings = session.query(BookingDOA).all()
-        booking_info = []
-        if bookings:
-            for booking in bookings:
-                booking_info.append({
-                    "begin_date": booking.begin_date.isoformat(),
-                    "end_date": booking.end_date.isoformat(),
-                    "price": booking.price,
-                    "refund": booking.refund,
-                    "status": booking.status,
-                })
-            session.close()
-            return jsonify(booking_info), 200
-        else:
-            session.close()
-            return jsonify({'message': 'No bookings'}), 404
+        if DataManager.check_if_authorize(request) == 200:
+            session = Session()
+            bookings = session.query(BookingDOA).all()
+            booking_info = []
+            if bookings:
+                for booking in bookings:
+                    booking_info.append({
+                        "begin_date": booking.begin_date.isoformat(),
+                        "end_date": booking.end_date.isoformat(),
+                        "price": booking.price,
+                        "refund": booking.refund,
+                        "status": booking.status,
+                    })
+                session.close()
+                return jsonify(booking_info), 200
+            else:
+                session.close()
+                return jsonify({'message': 'No bookings'}), 404
+        return jsonify({'message': 'Invalid Authorization'}), 401
 
     @staticmethod
     def update(booking_id:int, body:dict) -> tuple:
@@ -120,34 +141,35 @@ class Booking:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
-        # Cast the booking_id to an int
-        booking_id = int(booking_id)
+        if DataManager.check_if_authorize(request) == 200:
+            # Cast the booking_id to an int
+            booking_id = int(booking_id)
 
-        session = Session()
-        booking = session.query(BookingDOA).filter(BookingDOA.id == booking_id).first()
-        if booking:
-            booking.begin_date = body.get('begin_date', datetime.strptime(body["begin_date"],'%Y-%m-%d'))
-            booking.end_date = body.get('end_date', datetime.strptime(body['end_date'],'%Y-%m-%d'))
-            booking.price = body.get('price', body["price"])
-            booking.refund = body.get("refund",body["refund"]) 
-            booking.status = body.get('status', body["status"]) 
-            session.commit()
-            session.refresh(booking)
-             # Publish the listing event after the listing is created
-            if booking.refund:
-                booking_id = booking.id
-                refund_amount = booking.price
-                project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') or 'emerald-diagram-413020'
-                booking_topic_id = os.getenv('BOOKING_TOPIC_ID') or 'booking_refund'
+            session = Session()
+            booking = session.query(BookingDOA).filter(BookingDOA.id == booking_id).first()
+            if booking:
+                booking.begin_date = body.get('begin_date', datetime.strptime(body["begin_date"],'%Y-%m-%d'))
+                booking.end_date = body.get('end_date', datetime.strptime(body['end_date'],'%Y-%m-%d'))
+                booking.price = body.get('price', body["price"])
+                booking.refund = body.get("refund",body["refund"]) 
+                booking.status = body.get('status', body["status"]) 
+                session.commit()
+                session.refresh(booking)
+                # Publish the listing event after the listing is created
+                if booking.refund:
+                    booking_id = booking.id
+                    refund_amount = booking.price
+                    project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') or 'emerald-diagram-413020'
+                    booking_topic_id = os.getenv('BOOKING_TOPIC_ID') or 'booking_refund'
 
-                publish_refund_event(project_id=project_id,booking_topic_id=booking_topic_id,
-                                    booking_id=booking_id,refund_amount=refund_amount)
+                    publish_refund_event(project_id=project_id,booking_topic_id=booking_topic_id,
+                                        booking_id=booking_id,refund_amount=refund_amount)
+                    session.close()
+                    return jsonify({'message': 'Booking updated successfully'}), 200
+            else:
                 session.close()
-                return jsonify({'message': 'Booking updated successfully'}), 200
-        else:
-            session.close()
-            return jsonify({'message': f'No booking found with id {booking_id}'}), 404
-
+                return jsonify({'message': f'No booking found with id {booking_id}'}), 404
+        return jsonify({'message': 'Invalid Authorization'}), 401
     @staticmethod
     def delete(booking_id: int) -> tuple:
         """
@@ -159,14 +181,16 @@ class Booking:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
-        # Cast the booking_id to an int
-        booking_id = int(booking_id)
+        if DataManager.check_if_authorize(request) == 200:
+            # Cast the booking_id to an int
+            booking_id = int(booking_id)
 
-        session = Session()
-        affected_rows = session.query(BookingDOA).filter(BookingDOA.id == booking_id).delete()
-        session.commit()
-        session.close()
-        if affected_rows == 0:
-            return jsonify({'message': f'No booking found with id {booking_id}'}), 404
-        else:
-            return jsonify({'message': 'Booking deleted successfully'}), 200
+            session = Session()
+            affected_rows = session.query(BookingDOA).filter(BookingDOA.id == booking_id).delete()
+            session.commit()
+            session.close()
+            if affected_rows == 0:
+                return jsonify({'message': f'No booking found with id {booking_id}'}), 404
+            else:
+                return jsonify({'message': 'Booking deleted successfully'}), 200
+        return jsonify({'message': 'Invalid Authorization'}), 401
