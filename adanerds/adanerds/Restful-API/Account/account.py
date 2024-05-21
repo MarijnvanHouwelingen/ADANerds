@@ -50,6 +50,7 @@ class User:
                 last_name=body['last_name'],
                 email_address=body['email_address'],
                 password=body['password'],
+                report = False,
                 notification_settings= notification_settings,
                 notification_id= notification_settings.id
             )
@@ -57,27 +58,11 @@ class User:
             session.add(user)
             session.commit()
             session.refresh(user)
-            # Publish the listing event after the listing is created
-            user_data = {
-                "id": user.id,
-                "user_name": user.user_name,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email_address": user.email_address,
-                "password": user.password,
-                "notification_id": user.notification_id,
-            }
-            
-            project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') 
-            account_listing_id = os.getenv('LISTING_TOPIC_ID') 
-
-            publish_account_event(project_id=project_id,account_topic_id=account_listing_id,account_data=user_data)
-            
             return jsonify({'user_id': user.id}), 200
         except Exception as e:
             session.rollback()
-            print(f"Error creating listing: {e}")
-            return jsonify({'error': 'An error occurred while creating the listing'}), 500
+            print(f"Error creating user: {e}")
+            return jsonify({'error': 'An error occurred while creating the user'}), 500
         finally:
             session.close()
             
@@ -108,7 +93,8 @@ class User:
                 "first_name": user.first_name,
                 "last_name": user.last_name,
                 "email_address": user.email_address,
-                "password": user.password
+                "password": user.password,
+                'report': user.report
             }
             session.close()
             return jsonify(user_info), 200
@@ -140,9 +126,29 @@ class User:
             user.last_name = body.get('last_name', body["last_name"])
             user.email_address = body.get('email_address', body["email_address"])
             user.password = body.get('password', body["password"])  # Again, consider hashing
+            user.report = body.get('report',body['report'])
             session.commit()
-            session.close()
-            return jsonify({'message': 'User updated successfully'}), 200
+            session.refresh(user)
+            if user.report:
+                # Publish the listing event after the listing is created
+                user_data = {
+                    "id": user.id,
+                    "user_name": user.user_name,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email_address": user.email_address,
+                    "password": user.password,
+                    "notification_id": user.notification_id,
+                }
+                
+                project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') or 'emerald-diagram-413020'
+                account_listing_id = os.getenv('LISTING_TOPIC_ID') or 'report_users'
+
+                publish_account_event(project_id=project_id,account_topic_id=account_listing_id,account_data=user_data)
+                session.close()
+                return jsonify({'message': 'User updated successfully'}), 200
+            return jsonify({'user_id': user.id}), 200
+               
         else:
             session.close()
             return jsonify({'message': f'No user found with id {user_id}'}), 404

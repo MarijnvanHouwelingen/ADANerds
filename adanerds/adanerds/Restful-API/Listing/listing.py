@@ -7,7 +7,7 @@ from db import Session
 from sqlalchemy.sql import text
 
 # The listing publish event function
-from listing_sub import publish_listing_event 
+from listing_pub import publish_listing_event 
 
 
 class DataManager:
@@ -50,6 +50,7 @@ class Listing:
             session.add(listing)
             session.commit()
             session.refresh(listing)
+      
             # Publish the listing event after the listing is created
             listing_data = {
                 "id": listing.id,
@@ -168,4 +169,4 @@ class Listing:
         if affected_rows == 0:
             return jsonify({'message': f'No Listing found with id {listing_id}'}), 404
         else:
-            return jsonify({'message': 'Listing deleted successfully'}), 200
+            return jsonify({'message': 'Listing deleted successfully'}), 200        

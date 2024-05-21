@@ -354,6 +354,8 @@ components:
           format: string
         password:
           format: string
+        report:
+          type: boolean
     UserOut:
       required:
         - id
@@ -361,6 +363,7 @@ components:
         - first_name
         - last_name
         - email_address
+        - report
       properties:
         id:
           type: integer
@@ -373,6 +376,8 @@ components:
           format: string
         email_address:
           format: string
+        report:
+          type: boolean
     Error:
       required:
         - code
