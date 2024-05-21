@@ -1,5 +1,0 @@
-# FAAS
-functions-framework
-google-cloud-pubsub
-requests
-google-cloud-bigquery-storage

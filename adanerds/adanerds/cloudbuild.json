@@ -235,7 +235,7 @@
                 "--platform",
                 "managed",
                 "--port",
-                "8080",
+                "8081",
                 "--cpu",
                 "2",
                 "--memory",
