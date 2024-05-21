@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 import json 
 import base64
 import functions_framework
-from pub_sub import create_topic, create_subscription
+#from pub_sub import create_topic, create_subscription
 
 app = Flask(__name__)
 

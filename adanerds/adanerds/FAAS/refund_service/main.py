@@ -1,7 +1,7 @@
 import json 
 import base64
 import functions_framework
-from pub_sub import create_topic, publish_message, create_subscription
+from pub_sub import publish_message #, create_topic,  create_subscription
 from flask import Flask, jsonify
 app = Flask(__name__)
 
