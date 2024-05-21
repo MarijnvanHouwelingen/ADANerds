@@ -63,9 +63,5 @@ def check_if_authorize(token):
         raise OAuthProblem('Invalid token')
 
 
-# Register the authentication function with Connexion
-app.app.security_handler_factory['BearerAuth'] = check_if_authorize
-
-
 if __name__ == '__main__':
     app.run(port=int(os.environ.get("PORT", 5000)), host='0.0.0.0')
