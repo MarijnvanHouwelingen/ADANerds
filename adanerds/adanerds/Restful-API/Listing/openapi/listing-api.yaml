@@ -233,6 +233,7 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+      x-bearerInfoFunc: check_if_authorize
     # Error and AnyMsg schemas already defined...
 
 # Additional details may need to be adjusted

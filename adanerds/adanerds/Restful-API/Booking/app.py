@@ -53,15 +53,10 @@ def check_if_authorize(token):
         logging.error("Invalid token")
         raise OAuthProblem('Invalid token')
 
-def bearer_auth(token):
-    """Extract and validate the Bearer token from the request."""
-    if not token:
-        logging.error("Authorization token is missing from the request")
-        raise OAuthProblem('No authorization token provided')
-    return check_if_authorize(token)
 
-# Configure Connexion to use the authorization function
-app.app.config['connexion_auth'] = {'BearerAuth': bearer_auth}
+
+# Register the authentication function with Connexion
+app.app.security_handler_factory['BearerAuth'] = check_if_authorize
 
 # Initialize CORS
 CORS(app.app)
