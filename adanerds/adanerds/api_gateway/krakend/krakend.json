@@ -10,15 +10,15 @@
             "method": "POST",
             "output_encoding": "json",
             "backend": [
-            {
-                "url_pattern": "/register",
-                "encoding": "json",
-                "method": "POST",
-                "host": [
-                "http://authentication_service:5000/"
-                ],
-                "disable_host_sanitize": false
-            }
+                {
+                    "url_pattern": "/register",
+                    "encoding": "json",
+                    "method": "POST",
+                    "host": [
+                        "authentication_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
             ]
         },
         {
@@ -26,15 +26,15 @@
             "method": "POST",
             "output_encoding": "json",
             "backend": [
-            {
-                "url_pattern": "/login",
-                "encoding": "json",
-                "method": "POST",
-                "host": [
-                "http://authentication_service:5000/"
-                ],
-                "disable_host_sanitize": false
-            }
+                {
+                    "url_pattern": "/login",
+                    "encoding": "json",
+                    "method": "POST",
+                    "host": [
+                        "authentication_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
             ]
         },
         {
@@ -42,15 +42,335 @@
             "method": "POST",
             "output_encoding": "json",
             "backend": [
-            {
-                "url_pattern": "/verify",
-                "encoding": "json",
-                "method": "POST",
-                "host": [
-                "http://authentication_service:5000/"
-                ],
-                "disable_host_sanitize": false
-            }
+                {
+                    "url_pattern": "/verify",
+                    "encoding": "json",
+                    "method": "POST",
+                    "host": [
+                        "authentication_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/users",
+            "method": "POST",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/users",
+                    "encoding": "json",
+                    "method": "POST",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/users/{user_id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/users/{user_id}",
+                    "encoding": "json",
+                    "method": "GET",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/users/{user_id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/users/{user_id}",
+                    "encoding": "json",
+                    "method": "PUT",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/users/{user_id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/users/{user_id}",
+                    "encoding": "json",
+                    "method": "DELETE",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/{user_id}/profiles",
+            "method": "POST",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/{user_id}/profiles",
+                    "encoding": "json",
+                    "method": "POST",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/{user_id}/profiles/{profile_id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/{user_id}/profiles/{profile_id}",
+                    "encoding": "json",
+                    "method": "GET",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/{user_id}/profiles/{profile_id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/{user_id}/profiles/{profile_id}",
+                    "encoding": "json",
+                    "method": "PUT",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/{user_id}/profiles/{profile_id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/{user_id}/profiles/{profile_id}",
+                    "encoding": "json",
+                    "method": "DELETE",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/{user_id}/notifications",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/{user_id}/notifications",
+                    "encoding": "json",
+                    "method": "GET",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/accounts/{user_id}/notifications",
+            "method": "PUT",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/accounts/{user_id}/notifications",
+                    "encoding": "json",
+                    "method": "PUT",
+                    "host": [
+                        "account_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/bookings",
+            "method": "POST",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/bookings",
+                    "encoding": "json",
+                    "method": "POST",
+                    "host": [
+                        "booking_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/bookings",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/bookings",
+                    "encoding": "json",
+                    "method": "GET",
+                    "host": [
+                        "booking_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/bookings/{booking_id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/bookings/{booking_id}",
+                    "encoding": "json",
+                    "method": "GET",
+                    "host": [
+                        "booking_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/bookings/{booking_id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/bookings/{booking_id}",
+                    "encoding": "json",
+                    "method": "PUT",
+                    "host": [
+                        "booking_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/bookings/{booking_id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/bookings/{booking_id}",
+                    "encoding": "json",
+                    "method": "DELETE",
+                    "host": [
+                        "booking_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/listings",
+            "method": "POST",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/listings",
+                    "encoding": "json",
+                    "method": "POST",
+                    "host": [
+                        "listing_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/listings",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/listings",
+                    "encoding": "json",
+                    "method": "GET",
+                    "host": [
+                        "listing_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/listings/{listing_id}",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/listings/{listing_id}",
+                    "encoding": "json",
+                    "method": "GET",
+                    "host": [
+                        "listing_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/listings/{listing_id}",
+            "method": "PUT",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/listings/{listing_id}",
+                    "encoding": "json",
+                    "method": "PUT",
+                    "host": [
+                        "listing_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/listings/{listing_id}",
+            "method": "DELETE",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/listings/{listing_id}",
+                    "encoding": "json",
+                    "method": "DELETE",
+                    "host": [
+                        "listing_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
             ]
         }
     ]
