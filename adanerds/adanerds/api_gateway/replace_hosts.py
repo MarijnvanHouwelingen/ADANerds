@@ -6,7 +6,7 @@ import logging
 logging.basicConfig(level=logging.INFO)
 
 
-old_hosts = ["authentication_service", "account_service", "booking_service", "listing_service"]
+old_hosts = ["authentication_service", "account_service", "booking_service", "listing_service", "picture_service"]
 
 
 def replace_hosts(json_path, new_hosts):
@@ -34,7 +34,11 @@ def replace_hosts(json_path, new_hosts):
                     # Find the index in hosts that contains "listing"
                     index = next((i for i, host in enumerate(new_hosts) if "listing" in host), None)
                     backend['host'] = [new_hosts[index]]
-
+                elif "picture" in backend['host'][0]:
+                    # Find the index in hosts that contains "event"
+                    index = next((i for i, host in enumerate(new_hosts) if "event" in host), None)
+                    backend['host'] = [new_hosts[index]]
+                    
     # Write the updated JSON back to the file
     with open(json_path, 'w') as file:
         json.dump(data, file, indent=4)
@@ -53,7 +57,7 @@ if __name__ == "__main__":
         hosts = file.read().splitlines()
 
     # Only keep the hosts that contain auth, account, booking, and listing
-    hosts = [host for host in hosts if any(old_host in host for old_host in ["auth-service", "account-service", "booking-service", "listing-service"])]
+    hosts = [host for host in hosts if any(old_host in host for old_host in ["auth-service", "account-service", "booking-service", "listing-service", "listing-event"])]
 
     replace_hosts(json_path, hosts)
     logging.info(f"Hosts in {json_path} have been replaced with hosts from {txt_path}")
