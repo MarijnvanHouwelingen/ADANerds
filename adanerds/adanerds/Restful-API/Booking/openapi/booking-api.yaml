@@ -10,6 +10,8 @@ paths:
   /bookings:
     post:
       summary: Create a Booking
+      security:
+        - BearerAuth: []
       operationId: booking.Booking.create
       tags:
         - Booking
@@ -45,6 +47,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     get:
       summary: Get all Bookings of one listing
+      security:
+        - BearerAuth: []
       operationId: booking.Booking.get_all
       tags:
         - Booking
@@ -71,6 +75,8 @@ paths:
   /bookings/{booking_id}:
     get:
       summary: Get a Booking
+      security:
+        - BearerAuth: []
       operationId: booking.Booking.get_one
       tags:
         - Booking
@@ -101,6 +107,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: Update a Booking
+      security:
+        - BearerAuth: []
       operationId: booking.Booking.update
       tags:
         - Booking
@@ -137,6 +145,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     delete:
       summary: Delete a Booking
+      security:
+        - BearerAuth: []
       operationId: booking.Booking.delete
       tags:
         - Booking
@@ -228,6 +238,11 @@ components:
           format: int64
         message:
           format: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
     # Error and AnyMsg schemas already defined...
 
 # Additional details may need to be adjusted
