@@ -1,7 +1,7 @@
 import json 
 import base64
 import functions_framework
-from pub_sub import create_topic, publish_message, create_subscription
+from pub_sub import publish_message #, create_topic,  create_subscription
 from flask import Flask, jsonify
 app = Flask(__name__)
 
@@ -10,9 +10,10 @@ booking_topic_id = 'booking_refund'
 refund_subscription_id = 'refund-service-subscription'
 refund_status_topic_id = 'refund_status'
 
-create_topic(project_id, booking_topic_id)
-create_subscription(project_id, booking_topic_id, refund_subscription_id)
-create_topic(project_id, refund_status_topic_id)
+# Already created topic and subscription
+#create_topic(project_id, booking_topic_id)
+#create_subscription(project_id, booking_topic_id, refund_subscription_id)
+#create_topic(project_id, refund_status_topic_id)
 
 @functions_framework.cloud_event
 def handle_refund_event(cloud_event):

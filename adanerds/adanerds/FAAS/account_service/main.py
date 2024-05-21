@@ -2,7 +2,7 @@ from flask import Flask, jsonify
 import json 
 import base64
 import functions_framework
-from pub_sub import create_topic, create_subscription
+#from pub_sub import create_topic, create_subscription
 
 app = Flask(__name__)
 
@@ -11,8 +11,9 @@ project_id = "emerald-diagram-413020"
 account_topic_id = "report_users"
 account_subscription_id = "account-service-subscription"
 
-create_topic(project_id, account_topic_id)
-create_subscription(project_id, account_topic_id, account_subscription_id)
+# Aleady created topic and subscription
+# create_topic(project_id, account_topic_id)
+# create_subscription(project_id, account_topic_id, account_subscription_id)
 
 @functions_framework.cloud_event
 def handle_account_event(cloud_event):
