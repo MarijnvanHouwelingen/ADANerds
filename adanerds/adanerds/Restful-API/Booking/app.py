@@ -8,7 +8,6 @@ import logging
 import requests
 from db import Base, engine
 from booking import Booking # noqa
-from authorization import check_if_authorize
 logging.basicConfig(level=logging.INFO)
 app = connexion.App(__name__, specification_dir="openapi/")
 Base.metadata.create_all(engine)
