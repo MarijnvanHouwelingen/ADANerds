@@ -10,6 +10,8 @@ paths:
   /listings:
     post:
       summary: Create a listing
+      security:
+        - BearerAuth: []
       operationId: listing.Listing.create
       tags:
         - Listing
@@ -46,6 +48,8 @@ paths:
   /listings/{listing_id}:
     get:
       summary: Get a Listing
+      security:
+        - BearerAuth: []
       operationId: listing.Listing.get
       tags:
         - Listing
@@ -76,6 +80,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: Update a Listing
+      security:
+        - BearerAuth: []
       operationId: listing.Listing.update
       tags:
         - User
@@ -112,6 +118,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     delete:
       summary: Delete a Listing
+      security:
+        - BearerAuth: []
       operationId: listing.Listing.delete
       tags:
         - Listing
@@ -220,6 +228,11 @@ components:
           format: int64
         message:
           format: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
     # Error and AnyMsg schemas already defined...
 
 # Additional details may need to be adjusted
