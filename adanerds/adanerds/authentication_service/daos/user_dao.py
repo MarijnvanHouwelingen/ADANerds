@@ -9,7 +9,7 @@ from db import Base
 
 class UserDAO(Base):
     """ User Model for storing user related details """
-    __tablename__ = "usertable"
+    __tablename__ = "authenticationtable"
 
     # The id is the primary key for the table but auto increments so does not have to be filled in
     id = Column(String(255), primary_key=True, nullable=False)

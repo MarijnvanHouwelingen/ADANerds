@@ -37,7 +37,7 @@
                 "4G",
                 "--allow-unauthenticated",
                 "--update-env-vars",
-                "DB_URL=bigquery://emerald-diagram-413020/userdb"
+                "DB_URL=bigquery://emerald-diagram-413020/authenticationdb"
             ]
         }
     ]

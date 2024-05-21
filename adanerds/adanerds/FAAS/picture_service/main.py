@@ -36,7 +36,7 @@ def handle_listing_event(cloud_event):
 
     return jsonify({'error': 'We apologize, but we are unable to get the listing information at this time.'})
 
-@app.route('listings/pictures', methods=['POST', 'GET'])
+@app.route('v1.0/listings/pictures', methods=['POST', 'GET'])
 def pictures():
     '''
     This function is designed to POST and GET images from a specified google cloud bucket

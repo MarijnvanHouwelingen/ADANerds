@@ -2,6 +2,7 @@
     "$schema": "http://www.krakend.io/schema/v3.json",
     "version": 3,
     "output_encoding": "json",
+    "timeout": "15s",
     "name": "krakend API Gateway",
     "port": 8081,
     "endpoints": [
@@ -368,6 +369,38 @@
                     "method": "DELETE",
                     "host": [
                         "listing_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/listings/pictures",
+            "method": "POST",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/listings/pictures",
+                    "encoding": "json",
+                    "method": "POST",
+                    "host": [
+                        "picture_service"
+                    ],
+                    "disable_host_sanitize": false
+                }
+            ]
+        },
+        {
+            "endpoint": "/listings/pictures",
+            "method": "GET",
+            "output_encoding": "json",
+            "backend": [
+                {
+                    "url_pattern": "/v1.0/listings/pictures",
+                    "encoding": "json",
+                    "method": "GET",
+                    "host": [
+                        "picture_service"
                     ],
                     "disable_host_sanitize": false
                 }

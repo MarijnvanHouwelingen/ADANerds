@@ -12,7 +12,7 @@ COPY . .
 EXPOSE 5000
 
 # General Enviroment Variables
-ENV DB_URL bigquery://emerald-diagram-413020/userdb
+ENV DB_URL bigquery://emerald-diagram-413020/authenticationdb
 ENV GOOGLE_CLOUD_PROJECT_ID emerald-diagram-413020
 
 # Run our App
