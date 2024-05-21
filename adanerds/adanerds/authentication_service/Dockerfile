@@ -7,18 +7,13 @@ COPY requirements.txt .
 # Install required python packages
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set the environment variable for Google Cloud authentication
-# ENV GOOGLE_APPLICATION_CREDENTIALS service-account-file.json
-
-# Copy all Account bounded context files using the same structure
 COPY . .
 # Expose the port that our app runs in
 EXPOSE 5000
 
 # General Enviroment Variables
-ENV DB_URL bigquery://emerald-diagram-413020/bookingdb
+ENV DB_URL bigquery://emerald-diagram-413020/authenticationdb
 ENV GOOGLE_CLOUD_PROJECT_ID emerald-diagram-413020
 
-ENV BOOKING_TOPIC_ID booking_refund
 # Run our App
 CMD ["python3","app.py"]

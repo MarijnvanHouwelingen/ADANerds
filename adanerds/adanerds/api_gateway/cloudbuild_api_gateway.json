@@ -1,0 +1,44 @@
+{
+    "steps": [
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "build",
+                "-t",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1",
+                "adanerds/adanerds/api_gateway/"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "push",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1"
+            ]
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "gcloud",
+            "args": [
+                "run",
+                "deploy",
+                "api-gateway",
+                "--image",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1",
+                "--region",
+                "us-central1",
+                "--platform",
+                "managed",
+                "--port",
+                "8081",
+                "--cpu",
+                "2",
+                "--memory",
+                "4G",
+                "--allow-unauthenticated",
+                "--update-env-vars",
+                "DB_URL=bigquery://emerald-diagram-413020/authenticationdb"
+            ]
+        }
+    ]
+}

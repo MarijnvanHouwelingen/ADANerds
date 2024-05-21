@@ -1,0 +1,280 @@
+{
+    "steps": [
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "build",
+                "-t",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/auth-service:0.0.1",
+                "adanerds/adanerds/authentication_service/"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "build",
+                "-t",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/account-bq-api:0.0.1",
+                "adanerds/adanerds/Restful-API/Account/"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "build",
+                "-t",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/booking-bq-api:0.0.1",
+                "adanerds/adanerds/Restful-API/Booking/"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "build",
+                "-t",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/listing-bq-api:0.0.1",
+                "adanerds/adanerds/Restful-API/Listing/"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "push",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/auth-service:0.0.1"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "push",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/account-bq-api:0.0.1"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "push",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/booking-bq-api:0.0.1"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "push",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/listing-bq-api:0.0.1"
+            ]
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "gcloud",
+            "args": [
+                "run",
+                "deploy",
+                "auth-service",
+                "--image",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/auth-service:0.0.1",
+                "--region",
+                "us-central1",
+                "--platform",
+                "managed",
+                "--port",
+                "5000",
+                "--cpu",
+                "2",
+                "--memory",
+                "4G",
+                "--allow-unauthenticated",
+                "--update-env-vars",
+                "DB_URL=bigquery://emerald-diagram-413020/authenticationdb"
+            ],
+            "id": "auth-deployment"
+        },
+        {
+            "name": "ubuntu",
+            "args": [
+                "sleep",
+                "60"
+            ],
+            "waitFor": [
+                "auth-deployment"
+            ],
+            "id": "sleep-auth"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "/bin/sh",
+            "args": [
+                "-c",
+                "gcloud run services list --platform managed | grep https: | grep auth-service | head -1 | awk '{print $4}' > /workspace/auth_url.text"
+            ],
+            "waitFor": [
+                "sleep-auth"
+            ],
+            "id": "api-auth-extraction"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "gcloud",
+            "args": [
+                "run",
+                "deploy",
+                "account-service",
+                "--image",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/account-bq-api:0.0.1",
+                "--region",
+                "us-central1",
+                "--platform",
+                "managed",
+                "--port",
+                "5000",
+                "--cpu",
+                "2",
+                "--memory",
+                "4G",
+                "--allow-unauthenticated",
+                "--set-env-vars",
+                "AUTH_URL=$(cat /workspace/auth_url.text)"
+            ],
+            "id": "account-deployment"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "gcloud",
+            "args": [
+                "run",
+                "deploy",
+                "booking-service",
+                "--image",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/booking-bq-api:0.0.1",
+                "--region",
+                "us-central1",
+                "--platform",
+                "managed",
+                "--port",
+                "5000",
+                "--cpu",
+                "2",
+                "--memory",
+                "4G",
+                "--allow-unauthenticated",
+                "--set-env-vars",
+                "AUTH_URL=$(cat /workspace/auth_url.text)"
+            ],
+            "id": "booking-deployment"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "gcloud",
+            "args": [
+                "run",
+                "deploy",
+                "listing-service",
+                "--image",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/listing-bq-api:0.0.1",
+                "--region",
+                "us-central1",
+                "--platform",
+                "managed",
+                "--port",
+                "5000",
+                "--cpu",
+                "2",
+                "--memory",
+                "4G",
+                "--allow-unauthenticated",
+                "--set-env-vars",
+                "AUTH_URL=$(cat /workspace/auth_url.text)"
+            ],
+            "id": "listing-deployment"
+        },
+        {
+            "name": "ubuntu",
+            "args": [
+                "sleep",
+                "60"
+            ],
+            "waitFor": [
+                "listing-deployment"
+            ],
+            "id": "sleep"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "/bin/sh",
+            "args": [
+                "-c",
+                "gcloud run services list --platform managed | grep  https: | awk '{print $4}' > /workspace/api_urls.text"
+            ],
+            "waitFor": [
+                "sleep"
+            ],
+            "id": "api-urls-extraction"
+        },
+        {
+            "name": "ubuntu",
+            "args": [
+                "cat",
+                "/workspace/api_urls.text"
+            ],
+            "id": "display-api-urls"
+        },
+        {
+            "name": "python:3.9",
+            "id": "replace-hosts",
+            "entrypoint": "python",
+            "args": [
+                "adanerds/adanerds/api_gateway/replace_hosts.py",
+                "adanerds/adanerds/api_gateway/krakend/krakend.json",
+                "/workspace/api_urls.text"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "build",
+                "-t",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1",
+                "adanerds/adanerds/api_gateway/"
+            ]
+        },
+        {
+            "name": "gcr.io/cloud-builders/docker",
+            "args": [
+                "push",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1"
+            ]
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "gcloud",
+            "args": [
+                "run",
+                "deploy",
+                "api-gateway",
+                "--image",
+                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1",
+                "--region",
+                "us-central1",
+                "--platform",
+                "managed",
+                "--port",
+                "8081",
+                "--cpu",
+                "2",
+                "--memory",
+                "4G",
+                "--allow-unauthenticated"
+            ],
+            "id": "api-gateway-deployment"
+        }
+    ],
+    "artifacts": {
+        "objects": {
+            "location": "gs://ass2_temp/",
+            "paths": [
+                "/workspace/api_urls.text",
+                "/workspace/auth_url.text"
+            ]
+        }
+    }
+}
