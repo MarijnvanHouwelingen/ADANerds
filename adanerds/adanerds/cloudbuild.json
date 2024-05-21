@@ -5,7 +5,7 @@
             "args": [
                 "build",
                 "-t",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/auth-service:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/auth-service:0.0.1",
                 "adanerds/adanerds/authentication_service/"
             ]
         },
@@ -14,7 +14,7 @@
             "args": [
                 "build",
                 "-t",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/account-bq-api:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1",
                 "adanerds/adanerds/Restful-API/Account/"
             ]
         },
@@ -23,7 +23,7 @@
             "args": [
                 "build",
                 "-t",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/booking-bq-api:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/booking-bq-api:0.0.1",
                 "adanerds/adanerds/Restful-API/Booking/"
             ]
         },
@@ -32,7 +32,7 @@
             "args": [
                 "build",
                 "-t",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/listing-bq-api:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/listing-bq-api:0.0.1",
                 "adanerds/adanerds/Restful-API/Listing/"
             ]
         },
@@ -40,28 +40,28 @@
             "name": "gcr.io/cloud-builders/docker",
             "args": [
                 "push",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/auth-service:0.0.1"
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/auth-service:0.0.1"
             ]
         },
         {
             "name": "gcr.io/cloud-builders/docker",
             "args": [
                 "push",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/account-bq-api:0.0.1"
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1"
             ]
         },
         {
             "name": "gcr.io/cloud-builders/docker",
             "args": [
                 "push",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/booking-bq-api:0.0.1"
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/booking-bq-api:0.0.1"
             ]
         },
         {
             "name": "gcr.io/cloud-builders/docker",
             "args": [
                 "push",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/listing-bq-api:0.0.1"
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/listing-bq-api:0.0.1"
             ]
         },
         {
@@ -72,7 +72,7 @@
                 "deploy",
                 "auth-service",
                 "--image",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/auth-service:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/auth-service:0.0.1",
                 "--region",
                 "us-central1",
                 "--platform",
@@ -120,7 +120,7 @@
                 "deploy",
                 "account-service",
                 "--image",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/account-bq-api:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1",
                 "--region",
                 "us-central1",
                 "--platform",
@@ -145,7 +145,7 @@
                 "deploy",
                 "booking-service",
                 "--image",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/booking-bq-api:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/booking-bq-api:0.0.1",
                 "--region",
                 "us-central1",
                 "--platform",
@@ -170,7 +170,7 @@
                 "deploy",
                 "listing-service",
                 "--image",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/listing-bq-api:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/listing-bq-api:0.0.1",
                 "--region",
                 "us-central1",
                 "--platform",
@@ -233,7 +233,7 @@
             "args": [
                 "build",
                 "-t",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/api-gateway:0.0.1",
                 "adanerds/adanerds/api_gateway/"
             ]
         },
@@ -241,7 +241,7 @@
             "name": "gcr.io/cloud-builders/docker",
             "args": [
                 "push",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1"
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/api-gateway:0.0.1"
             ]
         },
         {
@@ -252,7 +252,7 @@
                 "deploy",
                 "api-gateway",
                 "--image",
-                "us-central1-docker.pkg.dev/emerald-diagram-413020/ass2/api-gateway:0.0.1",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/api-gateway:0.0.1",
                 "--region",
                 "us-central1",
                 "--platform",
