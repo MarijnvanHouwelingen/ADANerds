@@ -16,7 +16,7 @@ COPY . .
 EXPOSE 5000
 
 # General Enviroment Variables
-ENV DB_URL  bigquery://emerald-diagram-413020/bookingdb
+ENV DB_URL bigquery://emerald-diagram-413020/bookingdb
 ENV GOOGLE_CLOUD_PROJECT_ID emerald-diagram-413020
 
 ENV BOOKING_TOPIC_ID booking_refund

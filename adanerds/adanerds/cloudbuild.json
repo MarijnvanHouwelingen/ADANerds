@@ -90,6 +90,29 @@
             "id": "auth-deployment"
         },
         {
+            "name": "ubuntu",
+            "args": [
+                "sleep",
+                "60"
+            ],
+            "waitFor": [
+                "auth-deployment"
+            ],
+            "id": "sleep-auth"
+        },
+        {
+            "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+            "entrypoint": "/bin/sh",
+            "args": [
+                "-c",
+                "gcloud run services list --platform managed | grep https: | grep auth-service | head -1 | awk '{print $4}' > /workspace/auth_url.text"
+            ],
+            "waitFor": [
+                "sleep-auth"
+            ],
+            "id": "api-auth-extraction"
+        },
+        {
             "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
             "entrypoint": "gcloud",
             "args": [
@@ -109,8 +132,8 @@
                 "--memory",
                 "4G",
                 "--allow-unauthenticated",
-                "--update-env-vars",
-                "DB_URL=bigquery://emerald-diagram-413020/accountdb"
+                "--set-env-vars",
+                "AUTH_URL=$(cat /workspace/auth_url.text)"
             ],
             "id": "account-deployment"
         },
@@ -134,8 +157,8 @@
                 "--memory",
                 "4G",
                 "--allow-unauthenticated",
-                "--update-env-vars",
-                "DB_URL=bigquery://emerald-diagram-413020/bookingdb"
+                "--set-env-vars",
+                "AUTH_URL=$(cat /workspace/auth_url.text)"
             ],
             "id": "booking-deployment"
         },
@@ -159,8 +182,8 @@
                 "--memory",
                 "4G",
                 "--allow-unauthenticated",
-                "--update-env-vars",
-                "DB_URL=bigquery://emerald-diagram-413020/listingdb"
+                "--set-env-vars",
+                "AUTH_URL=$(cat /workspace/auth_url.text)"
             ],
             "id": "listing-deployment"
         },
@@ -249,7 +272,8 @@
         "objects": {
             "location": "gs://ass2_temp/",
             "paths": [
-                "/workspace/api_urls.text"
+                "/workspace/api_urls.text",
+                "/workspace/auth_url.text"
             ]
         }
     }
