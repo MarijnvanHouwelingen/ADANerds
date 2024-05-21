@@ -56,9 +56,6 @@ def check_if_authorize(token):
 
 
 
-# Register the authentication function with Connexion
-app.app.security_handler_factory['BearerAuth'] = check_if_authorize
-
 
 # Initialize CORS
 CORS(app.app)
