@@ -64,7 +64,6 @@ class User:
                     first_name=body['first_name'],
                     last_name=body['last_name'],
                     email_address=body['email_address'],
-                    password=body['password'],
                     report = False,
                     notification_settings= notification_settings,
                     notification_id= notification_settings.id
@@ -106,7 +105,6 @@ class User:
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                     "email_address": user.email_address,
-                    "password": user.password,
                     'report': user.report
                 }
                 session.close()
@@ -139,7 +137,6 @@ class User:
                 user.first_name = body.get('first_name', body["first_name"])
                 user.last_name = body.get('last_name', body["last_name"])
                 user.email_address = body.get('email_address', body["email_address"])
-                user.password = body.get('password', body["password"])  # Again, consider hashing
                 user.report = body.get('report',body['report'])
                 session.commit()
                 session.refresh(user)

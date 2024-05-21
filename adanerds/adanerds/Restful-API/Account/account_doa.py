@@ -59,7 +59,6 @@ class UserDOA(Base):
     first_name: str = Column(String, nullable=False)
     last_name: str = Column(String, nullable=False)
     email_address: str = Column(String, unique=True, nullable=False)
-    password: str = Column(String, nullable=False)
     report:Optional[bool] = Column(Boolean)
     # foreign key
     notification_id: int = Column(Integer, ForeignKey("notification_settings.id"))
@@ -74,7 +73,6 @@ class UserDOA(Base):
         first_name: str,
         last_name: str,
         email_address: str,
-        password: str,
         report:bool,
         notification_settings,
         notification_id: int 
@@ -84,7 +82,6 @@ class UserDOA(Base):
         self.first_name = first_name
         self.last_name = last_name
         self.email_address = email_address
-        self.password = password
         self.report = report
         # Relationship User and notification_settings
         self.notification_settings = notification_settings
