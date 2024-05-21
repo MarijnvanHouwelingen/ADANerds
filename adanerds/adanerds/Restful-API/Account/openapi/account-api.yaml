@@ -10,6 +10,8 @@ paths:
   /accounts/users:
     post:
       summary: Create a User
+      security:
+        - BearerAuth: []
       operationId: account.User.create
       tags:
         - User
@@ -47,6 +49,8 @@ paths:
   /accounts/users/{user_id}:
     get:
       summary: Get a User
+      security:
+        - BearerAuth: []
       operationId: account.User.get
       tags:
         - User
@@ -77,6 +81,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: Update a User
+      security:
+        - BearerAuth: []
       operationId: account.User.update
       tags:
         - User
@@ -113,6 +119,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     delete:
       summary: Delete a User
+      security:
+        - BearerAuth: []
       operationId: account.User.delete
       tags:
         - User
@@ -144,6 +152,8 @@ paths:
   /accounts/{user_id}/profiles:
     post:
       summary: Create a Profile for a User
+      security:
+        - BearerAuth: []
       operationId: account.Profile.create
       tags:
         - Profile
@@ -179,6 +189,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     get:
       summary: Get a Profile
+      security:
+        - BearerAuth: []
       operationId: account.Profile.get
       tags:
         - Profile
@@ -209,6 +221,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     delete:
       summary: delete a profile
+      security:
+        - BearerAuth: []
       operationId: account.Profile.delete
       tags:
         - Profile
@@ -233,6 +247,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: update a profile
+      security:
+        - BearerAuth: []
       operationId: account.Profile.update
       tags:
         - Profile
@@ -265,6 +281,8 @@ paths:
   /accounts/{user_id}/notifications:
     get:
       summary: Get Notification Settings for a User
+      security:
+        - BearerAuth: []
       operationId: account.NotificationSettings.get
       tags:
         - Notification Settings
@@ -295,6 +313,8 @@ paths:
                 $ref: "#/components/schemas/Error"
     put:
       summary: Update Notification Settings for a User
+      security:
+        - BearerAuth: []
       operationId: account.NotificationSettings.update
       tags:
         - Notification Settings
@@ -342,7 +362,6 @@ components:
         - first_name
         - last_name
         - email_address
-        - password
       properties:
         user_name:
           format: string
@@ -351,8 +370,6 @@ components:
         last_name:
           format: string
         email_address:
-          format: string
-        password:
           format: string
         report:
           type: boolean
@@ -463,6 +480,11 @@ components:
           format: int64
         message:
           format: string
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
     # Error and AnyMsg schemas already defined...
 
 # Additional details may need to be adjusted
