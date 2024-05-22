@@ -2,7 +2,6 @@ from datetime import datetime
 from flask import jsonify,request
 
 
-
 from account_doa import UserDOA,NotificationSettingsDAO,ProfileDAO
 from sqlalchemy.sql import text
 from db import Session
@@ -33,7 +32,8 @@ class User:
         Returns:
             tuple: A tuple containing JSON response and HTTP status code.
         """
-        
+       
+            
         # Get the max_id from the datamanager class
         user_id = DataManager.get_next_id(UserDOA.__tablename__)
         notification_settings_id = DataManager.get_next_id(NotificationSettingsDAO.__tablename__)
@@ -67,7 +67,7 @@ class User:
             return jsonify({'error': 'An error occurred while creating the user'}), 500
         finally:
             session.close()
-
+       
             
     @staticmethod
     def get(user_id: str) -> tuple:
