@@ -7,10 +7,6 @@ from listing_doa import ListingDOA
 from db import Session
 from sqlalchemy.sql import text
 
-# The listing publish event function
-from listing_pub import publish_listing_event 
-
-
 class DataManager:
     @staticmethod
     def get_next_id(table_name: str) -> int:
@@ -53,24 +49,6 @@ class Listing:
             session.add(listing)
             session.commit()
             session.refresh(listing)
-    
-            # Publish the listing event after the listing is created
-            listing_data = {
-                "id": listing.id,
-                "begin_date": listing.begin_date.isoformat(),
-                "end_date": listing.end_date.isoformat(),
-                "status": listing.status,
-                "price": listing.price,
-                "capacity": listing.capacity,
-                "available_from": listing.available_from.isoformat(),
-                "available_to": listing.available_to.isoformat()
-            }
-            
-            project_id = os.getenv('GOOGLE_CLOUD_PROJECT_ID') 
-            listing_topic_id = os.getenv('LISTING_TOPIC_ID') 
-
-            publish_listing_event(project_id=project_id,listing_topic_id=listing_topic_id,listing_data=listing_data)
-            
             return jsonify({'Listing_id': listing.id}), 200
         except Exception as e:
             session.rollback()
