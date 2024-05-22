@@ -114,29 +114,14 @@
         },
         {
             "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
-            "entrypoint": "gcloud",
+            "entrypoint": "/bin/sh",
             "args": [
-                "run",
-                "deploy",
-                "account-service",
-                "--image",
-                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1",
-                "--region",
-                "us-central1",
-                "--platform",
-                "managed",
-                "--port",
-                "5000",
-                "--cpu",
-                "2",
-                "--memory",
-                "4G",
-                "--allow-unauthenticated",
-                "--set-env-vars",
-                "AUTH_URL=$(cat /workspace/auth_url.text)"
+                "-c",
+                "AUTH_URL=$(cat /workspace/auth_url.text); gcloud run deploy account-service --image ${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1 --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated --set-env-vars AUTH_URL=$AUTH_URL"
             ],
             "id": "account-deployment"
-        },
+        }
+        ,
         {
             "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
             "entrypoint": "gcloud",
