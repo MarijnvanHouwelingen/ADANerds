@@ -136,7 +136,6 @@ class User:
                     "first_name": user.first_name,
                     "last_name": user.last_name,
                     "email_address": user.email_address,
-                    "password": user.password,
                     "notification_id": user.notification_id,
                 }
                 

@@ -1,1 +1,1 @@
-gcloud functions deploy handle_listing_event --gen2 --region=us-central1 --runtime=python310 --entry-point=handle_listing_event --trigger-topic=update_listing --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=emerald-diagram-413020,LISTING_TOPIC_ID=update_listing,LISTING_SUBSCRIPTION_ID=listing-service-subscription"
+gcloud functions deploy pictures --gen2 --region=us-central1 --trigger-http --runtime=python310 --allow-unauthenticated --set-env-vars="AUTH_URL=https://auth-service-cimb7dstvq-uc.a.run.app"

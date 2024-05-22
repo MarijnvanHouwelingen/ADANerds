@@ -1,8 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify # noqa
 from google.cloud import storage
-import json 
-import base64
-import functions_framework
+import requests  # Import the requests library
+import os
+import logging
 #from pub_sub import create_topic, create_subscription
 
 app = Flask(__name__)
@@ -13,50 +13,55 @@ bucket_name =  'picture_ass2'
 client = storage.Client()
 bucket = client.bucket(bucket_name) 
 
-listing_topic_id = 'update_listing'
-listing_subscription_id = 'listing-service-subscription'
+# listing_topic_id = 'update_listing'
+# listing_subscription_id = 'listing-service-subscription'
 
 # Already created topic and subscription
 #create_topic(project_id, listing_topic_id)
 #create_subscription(project_id, listing_topic_id, listing_subscription_id)
 
-@functions_framework.cloud_event
-def handle_listing_event(cloud_event):
-    '''
-    This function is designed to subscribe to the create/update_listing topic and process listing information from the event bus. 
-    It will be triggered whenever a new message is published to the create/update_listing topic.
-    (Sub_Listing in Component Diagram)
-    '''
-    data = cloud_event.data
-    message_data = json.loads(base64.b64decode(data["message"]["data"]).decode('utf-8')) #Sub_Listing
-    print(f'Message data: {message_data}')
+# Authorization URL from environment variables
+AUTH_URL = os.getenv('AUTH_URL')
 
-    if message_data['type'] == "Listing":
-        listing_id = message_data['data']['id']
-        return jsonify({'message': f'Listing with ID {listing_id} has been created/updated.'}), 200
+# Set the logging level to INFO
+logging.basicConfig(level=logging.INFO)
 
-    return jsonify({'error': 'We apologize, but we are unable to get the listing information at this time.'})
+def verify_auth(request):
+    
+    auth_header = request.headers.get("Authorization")
+    logging.info(f"the header is {auth_header}")
+    if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+            print(f"the token is: {token}")
+    headers = {'Authorization': f'Bearer {token}'}
+    response = requests.post(f'{AUTH_URL}/verify', headers=headers)
+    logging.info(f"the response status.code is {response.status_code}")
+    return response.status_code == 200
 
 
 @app.route('/v1.0/listings/pictures', methods=['POST', 'GET'])
-def pictures():
+def pictures(request):
     '''
     This function is designed to POST and GET images from a specified google cloud bucket
     '''
-    if request.method == 'POST':
-        picture = request.files.get('file')
-        if picture:
-            blob = bucket.blob(picture.filename)
-            blob.upload_from_string(picture.read(), content_type=picture.content_type)
-            return jsonify({"message": f"Uploaded {picture.filename} to {bucket.name}"}), 200
-        return jsonify({"error": "No file uploaded"}), 400
+    logging.info(f"the request is {request}")
+    verify_auth(request=request)
+    if verify_auth(request=request):
+        if request.method == 'POST':
+            picture = request.files.get('file')
+            if picture:
+                blob = bucket.blob(picture.filename)
+                blob.upload_from_string(picture.read(), content_type=picture.content_type)
+                return jsonify({"message": f"Uploaded {picture.filename} to {bucket.name}"}), 200
+            return jsonify({"error": "No file uploaded"}), 400
 
-    if request.method == 'GET':
-        filename = request.args.get('filename')
-        if filename:
-            blob = bucket.blob(filename)
-            url = blob.generate_signed_url(3600, version="v4") 
-            return jsonify({"url": url}), 200
-        return jsonify({"error": "No filename provided"}), 400
+        # if request.method == 'GET':
+        #     filename = request.args.get('filename')
+        #     if filename:
+        #         blob = bucket.blob(filename)
+        #         url = blob.generate_signed_url(3600, version="v4") 
+        #         return jsonify({"url": url}), 200
+        #     return jsonify({"error": "No filename provided"}), 400
+    return jsonify({"error": "Authorization header missing or invalid"}), 401
 
  
