@@ -1,1 +1,1 @@
-gcloud functions deploy handle_refund_event --gen2 --region=us-central1 --runtime=python310 --entry-point=handle_refund_event --trigger-topic=booking_refund --set-env-vars="GOOGLE_CLOUD_PROJECT_ID=emerald-diagram-413020,BOOKING_TOPIC_ID=booking_refund,REFUND_SUBSCRIPTION_ID=refund-service-subscription,REFUND_STATUS_TOPIC_ID=refund_status"
+gcloud functions deploy handle_refund_event --gen2 --region=us-central1 --runtime=python310 --entry-point=handle_refund_event --trigger-topic=booking_refund 
