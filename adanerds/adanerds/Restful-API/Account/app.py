@@ -28,7 +28,7 @@ def check_if_authorize(token):
 
     auth_header = f"Bearer {token}"
     try:
-        base_url = os.environ['AUTH_URL']
+        base_url =   os.environ['AUTH_URL'] or 'https://auth-service-cimb7dstvq-uc.a.run.app'
         endpoint = "/verify"
         auth_url = base_url + endpoint
     except KeyError:
@@ -56,19 +56,11 @@ def bearer_info_func(token):
     print(f"Bearer token received: {token}")
     return check_if_authorize(token)
 
-options = {
-    "swagger_ui": True,
-    "swagger_url": "/swagger",
-    "pythonic_params": True,
-    "securityHandlers": {
-        "BearerAuth": bearer_info_func
-    }
-}
 
 logging.basicConfig(level=logging.INFO)
 app = connexion.App(__name__, specification_dir="openapi/")
 Base.metadata.create_all(engine)
-app.add_api('account-api.yaml',auth_all_paths=True, options=options)
+app.add_api('account-api.yaml',auth_all_paths=True)
 
 
 # Initialize CORS
