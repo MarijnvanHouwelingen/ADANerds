@@ -30,7 +30,7 @@ def check_if_authorize(token):
 
     auth_header = f"Bearer {token}"
     try:
-        base_url =   os.environ['AUTH_URL'] or 'https://auth-service-cimb7dstvq-uc.a.run.app'
+        base_url = os.environ['AUTH_URL'] or 'https://auth-service-cimb7dstvq-uc.a.run.app'
         endpoint = "/verify"
         auth_url = base_url + endpoint
     except KeyError:
