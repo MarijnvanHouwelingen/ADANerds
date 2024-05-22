@@ -30,7 +30,7 @@ def check_if_authorize(token):
 
     auth_header = f"Bearer {token}"
     try:
-        base_url = os.environ['AUTH_URL']
+        base_url =   os.environ['AUTH_URL'] or 'https://auth-service-cimb7dstvq-uc.a.run.app'
         endpoint = "/verify"
         auth_url = base_url + endpoint
     except KeyError:
@@ -53,6 +53,11 @@ def check_if_authorize(token):
     else:
         logging.error("Invalid token")
         raise OAuthProblem('Invalid token')
+    
+def bearer_info_func(token):
+    print(f"Bearer token received: {token}")
+    return check_if_authorize(token)
+
 
 
 
