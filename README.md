@@ -48,8 +48,8 @@ A KrakenD api gateway has been as a reverse proxy for all users. So that users d
 
 
 # Contributers:
-Marijn van Houwelingen 
-Edde Janssen
-Kyra Jongman
-Mark van Vlierden
-Floor Halkes
+- Marijn van Houwelingen 
+- Edde Janssen
+- Kyra Jongman
+- Mark van Vlierden
+- Floor Halkes
