@@ -1,7 +1,6 @@
 from datetime import datetime
 from flask import jsonify,request
 
-import logging
 
 from account_doa import UserDOA,NotificationSettingsDAO,ProfileDAO
 from sqlalchemy.sql import text
