@@ -1,7 +1,7 @@
 import datetime
 
 import bcrypt
-from sqlalchemy import Column, String, Integer, Boolean, DateTime
+from sqlalchemy import Column, String, Boolean, DateTime
 import uuid
 
 from db import Base

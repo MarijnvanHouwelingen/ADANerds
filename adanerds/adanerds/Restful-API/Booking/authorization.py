@@ -6,7 +6,9 @@ from connexion.exceptions import OAuthProblem
 def check_if_authorize(token):
     auth_header = f"Bearer {token}"
     try:
-        auth_url = os.environ['AUTH_URL']
+        base_url = os.environ['AUTH_URL']
+        endpoint = "/verify"
+        auth_url = base_url + endpoint
     except KeyError:
         raise OAuthProblem('AUTH_URL environment variable not set')
 
