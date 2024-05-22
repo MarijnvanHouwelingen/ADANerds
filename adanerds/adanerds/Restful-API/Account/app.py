@@ -5,22 +5,12 @@ import requests
 import connexion
 import logging
 from flask_cors import CORS
-
+from jose import JWTError, jwt
 from connexion.exceptions import OAuthProblem
 
 
 from db import Base, engine
 from account import User,Profile,NotificationSettings # noqa
-
-logging.basicConfig(level=logging.INFO)
-app = connexion.App(__name__, specification_dir="openapi/")
-Base.metadata.create_all(engine)
-app.add_api('account-api.yaml',auth_all_paths=True)
-
-
-# Initialize CORS
-CORS(app.app)
-
 
 def check_if_authorize(token):
     """Check if the token is valid by querying the authorization service.
@@ -61,6 +51,46 @@ def check_if_authorize(token):
     else:
         logging.error("Invalid token")
         raise OAuthProblem('Invalid token')
+    
+def bearer_info_func(token):
+    print(f"Bearer token received: {token}")
+    return check_if_authorize(token)
+
+options = {
+    "swagger_ui": True,
+    "swagger_url": "/swagger",
+    "pythonic_params": True,
+    "securityHandlers": {
+        "BearerAuth": bearer_info_func
+    }
+}
+
+logging.basicConfig(level=logging.INFO)
+app = connexion.App(__name__, specification_dir="openapi/")
+Base.metadata.create_all(engine)
+app.add_api('account-api.yaml',auth_all_paths=True, options=options)
+
+
+# Initialize CORS
+CORS(app.app)
+
+# get SECRET_KEY
+if 'SECRET_KEY' in os.environ:
+    key_file = os.environ['SECRET_KEY']
+else:
+    key_file = 'key.txt'
+with open(key_file, 'r') as file:
+    data = file.read().replace('\n', '')
+
+# JWT secret
+JWT_SECRET = data
+JWT_ALGORITHM = "HS256"
+
+def decode_token(token):
+    try:
+        return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except JWTError as e:
+        raise OAuthProblem from e
 
 
 if __name__ == '__main__':
