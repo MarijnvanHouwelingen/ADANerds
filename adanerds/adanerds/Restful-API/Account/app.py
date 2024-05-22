@@ -5,7 +5,7 @@ import requests
 import connexion
 import logging
 from flask_cors import CORS
-from jose import JWTError, jwt
+
 from connexion.exceptions import OAuthProblem
 
 
@@ -74,23 +74,6 @@ app.add_api('account-api.yaml',auth_all_paths=True, options=options)
 # Initialize CORS
 CORS(app.app)
 
-# get SECRET_KEY
-if 'SECRET_KEY' in os.environ:
-    key_file = os.environ['SECRET_KEY']
-else:
-    key_file = 'key.txt'
-with open(key_file, 'r') as file:
-    data = file.read().replace('\n', '')
-
-# JWT secret
-JWT_SECRET = data
-JWT_ALGORITHM = "HS256"
-
-def decode_token(token):
-    try:
-        return jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    except JWTError as e:
-        raise OAuthProblem from e
 
 
 if __name__ == '__main__':
