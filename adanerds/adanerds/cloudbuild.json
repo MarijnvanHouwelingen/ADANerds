@@ -114,10 +114,26 @@
         },
         {
             "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
-            "entrypoint": "/bin/sh",
+            "entrypoint": "gcloud",
             "args": [
-                "-c",
-                "AUTH_URL=$(cat /workspace/auth_url.text) && gcloud run deploy account-service --image ${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1 --region us-central1 --platform managed --port 5000 --cpu 2 --memory 4G --allow-unauthenticated --set-env-vars AUTH_URL=$AUTH_URL"
+                "run",
+                "deploy",
+                "account-service",
+                "--image",
+                "${_LOCATION}-docker.pkg.dev/${_PROJECT_ID}/${_REPOSITORY}/account-bq-api:0.0.1",
+                "--region",
+                "us-central1",
+                "--platform",
+                "managed",
+                "--port",
+                "5000",
+                "--cpu",
+                "2",
+                "--memory",
+                "4G",
+                "--allow-unauthenticated",
+                "--set-env-vars",
+                "AUTH_URL=https://auth-service-cimb7dstvq-uc.a.run.app"
             ],
             "id": "account-deployment"
         },
@@ -142,7 +158,7 @@
                 "4G",
                 "--allow-unauthenticated",
                 "--set-env-vars",
-                "AUTH_URL=$(cat /workspace/auth_url.text)"
+                "AUTH_URL=https://auth-service-cimb7dstvq-uc.a.run.app"
             ],
             "id": "booking-deployment"
         },
@@ -167,7 +183,7 @@
                 "4G",
                 "--allow-unauthenticated",
                 "--set-env-vars",
-                "AUTH_URL=$(cat /workspace/auth_url.text)"
+                "AUTH_URL=https://auth-service-cimb7dstvq-uc.a.run.app"
             ],
             "id": "listing-deployment"
         },
