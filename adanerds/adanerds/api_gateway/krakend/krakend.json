@@ -380,7 +380,7 @@
             "output_encoding": "json",
             "backend": [
                 {
-                    "url_pattern": "/v1.0/listings/pictures",
+                    "url_pattern": "/listings/pictures",
                     "encoding": "json",
                     "method": "POST",
                     "host": [
@@ -396,7 +396,7 @@
             "output_encoding": "json",
             "backend": [
                 {
-                    "url_pattern": "/v1.0/listings/pictures",
+                    "url_pattern": "/listings/pictures",
                     "encoding": "json",
                     "method": "GET",
                     "host": [
