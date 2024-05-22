@@ -5,6 +5,7 @@ This file contains an overview of the source code of Group 6 for Assignment 2 (A
 # The architecture:
 The source code contains a simplified implementation of the application DataLodge in assignment 1.
 
+
 ## Bounded contexts
 The following Bounded contexts were chosen in this implementation, which can be found in the folder 'Restful-API':
 - Account: The account bounded contexts containing the following tables: user, profile and notfication settings. 
