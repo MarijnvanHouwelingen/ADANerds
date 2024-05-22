@@ -23,7 +23,7 @@ class DataManager:
     
 class User:
     @staticmethod
-    def create(body: dict,tokenid) -> tuple:
+    def create(body: dict) -> tuple:
         """
         Create a new user.
 
